@@ -20,7 +20,7 @@ esupotp.isDeviceRegistrationRequired=false
 In cas.properties
 
 ```
-# MFA - google authenticator
+# MFA - ESUP-OTP
 cas.authn.mfa.globalProviderId=mfa-esupotp
 
 # Add translations, you will need to check what are the default from CAS "Message Bundles" properties
