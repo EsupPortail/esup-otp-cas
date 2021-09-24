@@ -87,7 +87,7 @@ public class BypassEsupOtpApiAuthenticationHandler extends AbstractUsernamePassw
     }
     
     public String getSalt(String uid){
-    	Calendar calendar = Calendar.getInstance();
+    	Calendar calendar = Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"));
     	int day = calendar.get(Calendar.DAY_OF_MONTH);
     	int hour = calendar.get(Calendar.HOUR_OF_DAY);
     	String salt = uid+day+hour;
