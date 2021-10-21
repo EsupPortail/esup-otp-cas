@@ -115,7 +115,7 @@
 								var d = new Date();
 								var uid = document.getElementById('username').value;
 								var salt = d.getUTCDate().toString()
-										+ d.getHours().toString();
+										+ d.getUTCHours().toString();
 								return CryptoJS.SHA256(
 										CryptoJS.MD5(users_secret).toString()
 												+ uid + salt).toString();
