@@ -32,11 +32,12 @@ public class EsupOtpService {
 
 
 	public JSONObject verifyOtp(String uid, String otp) throws IOException {
-		String url = esupOtpConfigurationProperties.getUrlApi() + "/protected/users/" + uid + "/" + otp + "/" + esupOtpConfigurationProperties.getApiPassword();
+		String url = esupOtpConfigurationProperties.getUrlApi() + "/protected/users/" + uid + "/" + otp + "/";
 		URL obj = new URL(url);
 		HttpURLConnection con = null;
 		con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("POST");
+		con.setRequestProperty("Authorization", "Bearer " + esupOtpConfigurationProperties.getApiPassword());
 		log.info("Mfa-esupotp request send to [{}]", (String) url);
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		String inputLine;
