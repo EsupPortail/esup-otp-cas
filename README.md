@@ -64,7 +64,7 @@ repositories {
 
 dependencies {
     ...
-    implementation "com.github.EsupPortail:esup-otp-cas:3d829df40b"
+    implementation "com.github.EsupPortail:esup-otp-cas:6.4.x-SNAPSHOT"
 }
 ```
 
