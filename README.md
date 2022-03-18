@@ -15,9 +15,13 @@ esupotp.apiPassword=changeit
 esupotp.byPassIfNoEsupOtpMethodIsActive=false
 esupotp.trustedDeviceEnabled=true
 esupotp.isDeviceRegistrationRequired=false
+esupotp.deviceRegistrationExpirationInDays=7
 # 11,12,13,14,18,21 are services ids : if we configure CAS to do ESUP-OTP MFA on these services but the user does not have an esup-otp factor enabled, then we bypass esup-otp
 esupotp.byPassServicesIfNoEsupOtpMethodIsActive=11,12,13,14,18,21
 ```
+
+With esupotp.trustedDeviceEnabled=true, esupotp.isDeviceRegistrationRequired=false and esupotp.deviceRegistrationExpirationInDays=7
+we auto register device for MFA (and without form) during 7 days (trusted devices/browsers - hack on cas-server-support-trusted-mfa)
 
 In cas.properties
 

@@ -38,6 +38,8 @@ public class EsupOtpConfigurationProperties extends BaseMultifactorAuthenticatio
 	Boolean trustedDeviceEnabled = true;
 	
 	Boolean isDeviceRegistrationRequired = false;
+
+	long deviceRegistrationExpirationInDays = -1;
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -49,6 +51,7 @@ public class EsupOtpConfigurationProperties extends BaseMultifactorAuthenticatio
 		log.info("byPassServicesIfNoEsupOtpMethodIsActive : {}", byPassServicesIfNoEsupOtpMethodIsActive);
 		log.info("trustedDeviceEnabled : {}", trustedDeviceEnabled);
 		log.info("isDeviceRegistrationRequired : {}", isDeviceRegistrationRequired);
+		log.info("deviceRegistrationExpirationInDays : {}", deviceRegistrationExpirationInDays);
 	}
 	
 }

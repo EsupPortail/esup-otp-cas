@@ -1,5 +1,6 @@
 package org.esupportail.cas.adaptors.esupotp.web.flow;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import org.apereo.cas.trusted.web.flow.MultifactorAuthenticationTrustBean;
 import org.apereo.cas.web.flow.CasWebflowConstants;
 import org.apereo.cas.web.flow.configurer.CasMultifactorWebflowCustomizer;
 import org.apereo.cas.web.support.WebUtils;
+import org.esupportail.cas.config.EsupOtpConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
 import org.springframework.webflow.engine.Flow;
@@ -22,18 +24,21 @@ public class EsupOtpMultifactorTrustWebflowConfigurer extends AbstractMultifacto
 	
 	private Boolean isDeviceRegistrationRequired = false;
 
+    private long deviceRegistrationExpirationInDays;
+
     private final FlowDefinitionRegistry flowDefinitionRegistry;
 
     public EsupOtpMultifactorTrustWebflowConfigurer(final FlowBuilderServices flowBuilderServices,
                                                       final FlowDefinitionRegistry loginFlowDefinitionRegistry,
-                                                      final boolean isDeviceRegistrationRequired,
+                                                      final EsupOtpConfigurationProperties esupOtpConfigurationProperties,
                                                       final FlowDefinitionRegistry flowDefinitionRegistry,
                                                       final ConfigurableApplicationContext applicationContext,
                                                       final CasConfigurationProperties casProperties,
                                                       final List<CasMultifactorWebflowCustomizer> mfaFlowCustomizers) {
         super(flowBuilderServices, loginFlowDefinitionRegistry, applicationContext, casProperties, Optional.of(flowDefinitionRegistry), mfaFlowCustomizers);
         this.flowDefinitionRegistry = flowDefinitionRegistry;
-        this.isDeviceRegistrationRequired = isDeviceRegistrationRequired;
+        this.isDeviceRegistrationRequired = esupOtpConfigurationProperties.getIsDeviceRegistrationRequired();
+        this.deviceRegistrationExpirationInDays = esupOtpConfigurationProperties.getDeviceRegistrationExpirationInDays();
     }
 
     @Override
@@ -49,6 +54,10 @@ public class EsupOtpMultifactorTrustWebflowConfigurer extends AbstractMultifacto
 	        	val deviceBean = WebUtils.getMultifactorAuthenticationTrustRecord(requestContext, MultifactorAuthenticationTrustBean.class);
 	            val deviceRecord = deviceBean.get();
 	            deviceRecord.setDeviceName("auto-device-registration");
+                if(deviceRegistrationExpirationInDays>-1) {
+                    deviceRecord.setExpiration(deviceRegistrationExpirationInDays);
+                    deviceRecord.setTimeUnit(ChronoUnit.DAYS);
+                }
 	            return null;
 	        });
         } 
