@@ -11,6 +11,7 @@ import org.apereo.cas.authentication.Credential;
 import org.apereo.cas.authentication.PreventedException;
 import org.apereo.cas.authentication.handler.support.AbstractPreAndPostProcessingAuthenticationHandler;
 import org.apereo.cas.authentication.principal.PrincipalFactory;
+import org.apereo.cas.authentication.principal.Service;
 import org.apereo.cas.services.ServicesManager;
 import org.apereo.cas.web.support.WebUtils;
 import org.esupportail.cas.config.EsupOtpConfigurationProperties;
@@ -43,7 +44,7 @@ public class EsupOtpAuthenticationHandler extends AbstractPreAndPostProcessingAu
     }
 
 	@Override
-	protected AuthenticationHandlerExecutionResult doAuthentication(final Credential credential)
+	protected AuthenticationHandlerExecutionResult doAuthentication(final Credential credential, Service service)
 			throws GeneralSecurityException, PreventedException {
 		final EsupOtpCredential esupotpCredential = (EsupOtpCredential) credential;
 		final String otp = esupotpCredential.getToken();
