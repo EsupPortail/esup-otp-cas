@@ -7,7 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 
-import org.esupportail.cas.adaptors.esupotp.EsupOtpCredentialTransport;
+import org.esupportail.cas.adaptors.esupotp.EsupOtpCredential;
 import org.esupportail.cas.config.EsupOtpConfigurationProperties;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -17,7 +17,6 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 /**
- * This is {@link EsupOtpSencCodeAction}.
  *
  * @author Alex Bouskine
  * @since 5.0.0
@@ -31,9 +30,9 @@ public class EsupOtpTransportService {
     @Autowired
     EsupOtpConfigurationProperties esupOtpConfigurationProperties;
     
-	public String sendCode(EsupOtpCredentialTransport transportCredential) {
+	public String sendCode(EsupOtpCredential credential) {
         try {
-                JSONObject response = sendCodeRequest(transportCredential.getUid(), transportCredential.getUserHash(), transportCredential.getTransport(), transportCredential.getMethod());
+                JSONObject response = sendCodeRequest(credential.getUid(), credential.getUserHash(), credential.getTransport(), credential.getMethod());
                 if(response.getString("code").equals("Ok"))return "success";
         } catch (NoSuchAlgorithmException|IOException e) {
         	logger.error("sendCode failed", e);

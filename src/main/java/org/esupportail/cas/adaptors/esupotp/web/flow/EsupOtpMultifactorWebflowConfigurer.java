@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import lombok.val;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.web.flow.CasWebflowConstants;
 import org.apereo.cas.web.flow.configurer.AbstractCasMultifactorWebflowConfigurer;
 import org.apereo.cas.web.flow.configurer.CasMultifactorWebflowCustomizer;
 import org.apereo.cas.util.CollectionUtils;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpCredential;
-import org.esupportail.cas.adaptors.esupotp.EsupOtpCredentialTransport;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.webflow.action.SetAction;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
@@ -31,8 +31,6 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
 
     public static final String MFA_ESUPOTP_EVENT_ID = "mfa-esupotp";
     
-    static final String VAR_ID_CREDENTIAL_TRANSPORT = "credentialTransport";
-    
     static final String STATE_ID_TRANSPORT_FORM = "getTransportsForm";
     
 
@@ -47,12 +45,12 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
     
     @Override
     protected void doInitialize() {
+
     	multifactorAuthenticationFlowDefinitionRegistries.forEach(registry -> {
     		
             Flow flow = getFlow(registry, MFA_ESUPOTP_EVENT_ID);
             
             createFlowVariable(flow, CasWebflowConstants.VAR_ID_CREDENTIAL, EsupOtpCredential.class);
-            createFlowVariable(flow, VAR_ID_CREDENTIAL_TRANSPORT, EsupOtpCredentialTransport.class);
             
             flow.getStartActionList().add(createEvaluateAction(CasWebflowConstants.ACTION_ID_INITIAL_FLOW_SETUP));
 
@@ -72,22 +70,21 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
             createTransitionForState(noCodeWaitingViewState, CasWebflowConstants.TRANSITION_ID_SUBMIT, "submitTransportEsupOtp");
 
             SetAction setPrincipalAction = createSetAction("viewScope.principal", "conversationScope.authentication.principal");
-            List<String> propertiesToBind = CollectionUtils.wrapList("token");
+            List<String> propertiesToBind = CollectionUtils.wrapList("token", "transport", "method", "uid", "userHash");
             BinderConfiguration binder = createStateBinderConfiguration(propertiesToBind);
             ViewState viewLoginFormState = createViewState(flow, "submitCodeFormView",
             		"esupOtpCodeView", binder);
             createStateModelBinding(viewLoginFormState, CasWebflowConstants.VAR_ID_CREDENTIAL, EsupOtpCredential.class);
+
             viewLoginFormState.getEntryActionList().add(setPrincipalAction);
             createTransitionForState(viewLoginFormState, CasWebflowConstants.TRANSITION_ID_SUBMIT,
                 CasWebflowConstants.STATE_ID_REAL_SUBMIT, Map.of("bind", Boolean.TRUE, "validate", Boolean.FALSE));
-            createTransitionForState(viewLoginFormState, "callTransportView", "sendRequestCodeView");
-            
-            ViewState sendRequestCodeViewState = createViewState(flow, "sendRequestCodeView", "fragments/esupOtpRequestCodeFormView" );
-            createStateModelBinding(sendRequestCodeViewState, VAR_ID_CREDENTIAL_TRANSPORT, EsupOtpCredentialTransport.class);
-            createTransitionForState(sendRequestCodeViewState, "submitCallTransport", "submitTransportEsupOtp");
+
+            createTransitionForState(viewLoginFormState, "submitCallTransport", "submitTransportEsupOtp");
             
             ActionState submitTransportEsupOtpState = createActionState(flow, "submitTransportEsupOtp",
-                    createEvaluateAction("esupotpTransportService.sendCode(credentialTransport)"));
+                    createEvaluateAction("esupotpTransportService.sendCode(credential)"));
+
             createTransitionForState(submitTransportEsupOtpState, CasWebflowConstants.TRANSITION_ID_SUCCESS, "successView");
             
             createTransitionForState(submitTransportEsupOtpState, CasWebflowConstants.TRANSITION_ID_ERROR, "errorView");
@@ -100,6 +97,6 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
             createTransitionForState(realSubmitState, CasWebflowConstants.TRANSITION_ID_SUCCESS, CasWebflowConstants.STATE_ID_SUCCESS);
             createTransitionForState(realSubmitState, CasWebflowConstants.TRANSITION_ID_ERROR, CasWebflowConstants.STATE_ID_INIT_LOGIN_FORM);
         });        
-    	registerMultifactorProviderAuthenticationWebflow(getLoginFlow(), MFA_ESUPOTP_EVENT_ID, MFA_ESUPOTP_EVENT_ID);
+    	registerMultifactorProviderAuthenticationWebflow(getLoginFlow(), MFA_ESUPOTP_EVENT_ID);
     }
 }

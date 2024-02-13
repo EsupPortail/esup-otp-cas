@@ -42,7 +42,7 @@ public class EsupOtpGetTransportsAction extends AbstractMultifactorAuthenticatio
 	}
 
 	@Override
-    protected Event doExecute(final RequestContext requestContext) throws Exception {
+    protected Event doExecuteInternal(final RequestContext requestContext) throws Exception {
         final RequestContext context = RequestContextHolder.getRequestContext();
         final String uid = WebUtils.getAuthentication(context).getPrincipal().getId();
         String userHash = esupOtpService.getUserHash(uid);
@@ -93,5 +93,5 @@ public class EsupOtpGetTransportsAction extends AbstractMultifactorAuthenticatio
         return new EventFactorySupport().event(this, "authWithCode");
     }
 
-  
+
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -62,24 +62,42 @@
 			<input type="hidden" name="geolocation"/>
                       </form>
 
-                    <div id="codeRequest" th:data-url="${flowExecutionKey}" class="card-header text-center"></div>
+                    <div id="codeRequest" class="card-header text-center">
+
+											<div id="transportStatus"></div>
+
+											<div class="form-wrapper">
+												<form method="post" id="fm2" class="fm-v clearfix">
+													<input type="hidden" name="_eventId" value="submitCallTransport" />
+													<input type="hidden" name="token" th:value="dummy"/>
+													<input type="hidden" name="uid" th:value="${user.uid}" id="inputUid"/>
+													<input type="hidden" name="userHash" th:value="${user.hash}" id="inputUserHash"/>
+													<input type="hidden" name="method" value="" id="inputMethod"/>
+													<input type="hidden" name="transport" value="" id="inputTransport"/>
+
+													<h3 class="text-center" for="token" th:utext="#{cas.mfa.esupotp.receiveCodeFromTransport}" th:unless="${#lists.isEmpty(listTransports)}"/>
+
+													<section class="cas-field my-3" th:each="transportMap : ${listTransports}">
+														<input
+																class="mdc-button mdc-button--raised transportInput" style="background-color: rgb(29, 113, 184);  margin-bottom:15px;" type="button"
+																th:value="#{|cas.mfa.esupotp.transport.${transportMap.transport}.${transportMap.method}|}"
+																th:onclick="document.getElementById('inputMethod').value=[[${transportMap.method}]];document.getElementById('inputTransport').value=[[${transportMap.transport}]];"
+														/>
+													</section>
+
+													<section class="cas-field my-3">
+														<input class="btn btn-block btn-submit d-none" name="submitCallTransport" accesskey="l"
+																th:value="#{screen.welcome.button.register}" tabindex="6" type="submit" id="submit" />
+														<input type="hidden" name="execution" th:value="${flowExecutionKey}"/>
+													</section>
+												</form>
+											</div>
+
+										</div>
 		  </div>
 		  </section>
             <script th:src="${apiUrl} + '/js/socket.io.js'"></script>
             <script th:inline="javascript">
-                    //on load, call transport list html
-                    var $outputDiv = $('#codeRequest');
-                    var eventId = "callTransportView";
-                    $.ajax({
-                        type: "POST",
-                        data: {execution:$("#codeRequest").data('url')}  ,
-                        url: "?_eventId="+eventId+"&ajaxSource=true"
-                    }).done(function(data){
-                        $outputDiv.html(data);
-                    }).fail(function(error){
-                        $outputDiv.html(error);
-                    });
-                    
                     // submit transport choice
                     $(document).on('click', 'input.transportInput', function(){
                         if($(this).val() != 'push'){
@@ -121,7 +139,7 @@
                     $.ajax({
                         type: "POST",
                         data: $("#fm2").serialize(),
-                        url: "?_eventId="+eventId+"&ajaxSource=true"
+                        url: "#"
                     }).done(function(data){
                         $outputDiv.html(data);
                     }).fail(function(error){

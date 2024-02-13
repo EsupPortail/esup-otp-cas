@@ -1,0 +1,5 @@
+org.esupportail.cas.config.support.authentication.EsupOtpAuthenticationEventExecutionPlanConfiguration
+org.esupportail.cas.config.EsupOtpConfiguration
+org.esupportail.cas.config.EsupOtpConfigurationProperties
+org.esupportail.cas.adaptors.esupotp.web.flow.EsupOtpTransportService
+org.esupportail.cas.config.EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfiguration

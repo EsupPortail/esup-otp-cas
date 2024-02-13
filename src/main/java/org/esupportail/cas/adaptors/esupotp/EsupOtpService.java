@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
-
+import jakarta.xml.bind.annotation.adapters.HexBinaryAdapter;
 import org.esupportail.cas.config.EsupOtpConfigurationProperties;
 import org.json.JSONException;
 import org.json.JSONObject;

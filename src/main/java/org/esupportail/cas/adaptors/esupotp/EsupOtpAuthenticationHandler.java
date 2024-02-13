@@ -56,7 +56,7 @@ public class EsupOtpAuthenticationHandler extends AbstractPreAndPostProcessingAu
 			if(response.getString("code").equals("Ok")){
 				return createHandlerResult(esupotpCredential, this.principalFactory.createPrincipal(uid), new ArrayList<>(0));
 			}
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			 log.error("doAuthentication failed", e);
 		}
 		throw new FailedLoginException("Failed to authenticate code " + otp);

@@ -23,10 +23,8 @@ public class EsupOtpAuthenticationWebflowEventResolver extends BaseMultifactorAu
 	}
 
 	@Override
-	public Set<Event> resolveInternal(RequestContext requestContext) {
+	public Set<Event> resolveInternal(RequestContext requestContext) throws Throwable {
 		return handleAuthenticationTransactionAndGrantTicketGrantingTicket(requestContext);
 	}
-
-
 
 }

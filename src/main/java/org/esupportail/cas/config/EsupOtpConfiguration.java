@@ -7,12 +7,12 @@ import org.apereo.cas.authentication.AuthenticationServiceSelectionPlan;
 import org.apereo.cas.authentication.AuthenticationSystemSupport;
 import org.apereo.cas.authentication.MultifactorAuthenticationContextValidator;
 import org.apereo.cas.authentication.MultifactorAuthenticationProviderSelector;
+import org.apereo.cas.config.MultifactorAuthnTrustConfiguration;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.services.ServicesManager;
 import org.apereo.cas.ticket.TicketFactory;
 import org.apereo.cas.ticket.registry.TicketRegistry;
 import org.apereo.cas.ticket.registry.TicketRegistrySupport;
-import org.apereo.cas.trusted.config.MultifactorAuthnTrustConfiguration;
 import org.apereo.cas.web.cookie.CasCookieBuilder;
 import org.apereo.cas.web.flow.CasWebflowConfigurer;
 import org.apereo.cas.web.flow.CasWebflowExecutionPlanConfigurer;
@@ -87,9 +87,9 @@ public class EsupOtpConfiguration {
 	}
 
 	@Bean
-	public Action esupotpAuthenticationWebflowAction(CasWebflowEventResolver esupotpAuthenticationWebflowEventResolver) {
+	public Action esupotpAuthenticationWebflowAction(final CasWebflowEventResolutionConfigurationContext casWebflowConfigurationContext) {
 		final EsupOtpAuthenticationWebflowAction esupOtpAuthenticationWebflowAction = new EsupOtpAuthenticationWebflowAction();
-        esupOtpAuthenticationWebflowAction.setEsupOtpAuthenticationWebflowEventResolver(esupotpAuthenticationWebflowEventResolver);
+        esupOtpAuthenticationWebflowAction.setEsupotpAuthenticationWebflowEventResolver(esupotpAuthenticationWebflowEventResolver(casWebflowConfigurationContext));
 		return esupOtpAuthenticationWebflowAction;
 	}
 
@@ -101,7 +101,7 @@ public class EsupOtpConfiguration {
 
     @ConditionalOnMissingBean(name = "esupotpAuthenticationWebflowEventResolver")
 	@Bean
-	public CasWebflowEventResolver esupotpAuthenticationWebflowEventResolver(final CasWebflowEventResolutionConfigurationContext casWebflowConfigurationContext) {
+	public EsupOtpAuthenticationWebflowEventResolver esupotpAuthenticationWebflowEventResolver(final CasWebflowEventResolutionConfigurationContext casWebflowConfigurationContext) {
 		return new EsupOtpAuthenticationWebflowEventResolver(casWebflowConfigurationContext);
 	}
     
