@@ -63,25 +63,21 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
 
             ActionState transportForm = createActionState(flow, STATE_ID_TRANSPORT_FORM,
                 createEvaluateAction("esupotpGetTransportsAction"));
-            createTransitionForState(transportForm, "authWithoutCode", "noCodeWaitingView");
             createTransitionForState(transportForm, "authWithCode", "submitCodeFormView");
-            
-            ViewState noCodeWaitingViewState = createViewState(flow, "noCodeWaitingView", "casEsupOtpNoCodeView");
-            createTransitionForState(noCodeWaitingViewState, CasWebflowConstants.TRANSITION_ID_SUBMIT, "submitTransportEsupOtp");
 
-            SetAction setPrincipalAction = createSetAction("viewScope.principal", "conversationScope.authentication.principal");
             List<String> propertiesToBind = CollectionUtils.wrapList("token", "transport", "method", "uid", "userHash");
             BinderConfiguration binder = createStateBinderConfiguration(propertiesToBind);
             ViewState viewLoginFormState = createViewState(flow, "submitCodeFormView",
             		"esupOtpCodeView", binder);
             createStateModelBinding(viewLoginFormState, CasWebflowConstants.VAR_ID_CREDENTIAL, EsupOtpCredential.class);
 
+            SetAction setPrincipalAction = createSetAction("viewScope.principal", "conversationScope.authentication.principal");
             viewLoginFormState.getEntryActionList().add(setPrincipalAction);
+
             createTransitionForState(viewLoginFormState, CasWebflowConstants.TRANSITION_ID_SUBMIT,
                 CasWebflowConstants.STATE_ID_REAL_SUBMIT, Map.of("bind", Boolean.TRUE, "validate", Boolean.FALSE));
 
             createTransitionForState(viewLoginFormState, "submitCallTransport", "submitTransportEsupOtp");
-            
             ActionState submitTransportEsupOtpState = createActionState(flow, "submitTransportEsupOtp",
                     createEvaluateAction("esupotpTransportService.sendCode(credential)"));
 
