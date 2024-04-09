@@ -18,7 +18,7 @@ public class EsupOtpAuthenticationWebflowAction extends BaseCasWebflowAction {
 	CasWebflowEventResolver esupotpAuthenticationWebflowEventResolver;
 
     @Override
-    protected Event doExecuteInternal(final RequestContext requestContext) throws Exception {
+    protected Event doExecute(final RequestContext requestContext) throws Exception {
         return FunctionUtils.doUnchecked(() -> this.esupotpAuthenticationWebflowEventResolver.resolveSingle(requestContext));
     }
 

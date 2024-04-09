@@ -1,13 +1,12 @@
 package org.esupportail.cas.adaptors.esupotp.web.flow;
 
-import java.util.Set;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apereo.cas.web.flow.authentication.BaseMultifactorAuthenticationProviderEventResolver;
 import org.apereo.cas.web.flow.resolver.impl.CasWebflowEventResolutionConfigurationContext;
 import org.springframework.webflow.execution.Event;
 import org.springframework.webflow.execution.RequestContext;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.Set;
 
 /**
  * This is {@link EsupOtpAuthenticationWebflowEventResolver}.
@@ -23,7 +22,7 @@ public class EsupOtpAuthenticationWebflowEventResolver extends BaseMultifactorAu
 	}
 
 	@Override
-	public Set<Event> resolveInternal(RequestContext requestContext) throws Throwable {
+	public Set<Event> resolveInternal(RequestContext requestContext) {
 		return handleAuthenticationTransactionAndGrantTicketGrantingTicket(requestContext);
 	}
 

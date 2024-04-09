@@ -15,13 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import jakarta.xml.bind.annotation.adapters.HexBinaryAdapter;
 import org.esupportail.cas.config.EsupOtpConfigurationProperties;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 @Slf4j
 @AllArgsConstructor

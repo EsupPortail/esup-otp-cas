@@ -1,21 +1,19 @@
 package org.esupportail.cas.config.support.authentication;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.apereo.cas.authentication.Authentication;
 import org.apereo.cas.authentication.MultifactorAuthenticationProvider;
 import org.apereo.cas.authentication.bypass.BaseMultifactorAuthenticationProviderBypassEvaluator;
 import org.apereo.cas.services.RegisteredService;
-import org.apereo.cas.web.support.WebUtils;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpMethod;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpService;
 import org.esupportail.cas.config.EsupOtpConfigurationProperties;
 import org.esupportail.cas.configuration.model.support.mfa.EsupOtpMultifactorProperties;
 import org.json.JSONObject;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProviderBypassEvaluator {

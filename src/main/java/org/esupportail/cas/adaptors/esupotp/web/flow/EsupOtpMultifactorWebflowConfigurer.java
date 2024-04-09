@@ -1,15 +1,10 @@
 package org.esupportail.cas.adaptors.esupotp.web.flow;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import lombok.val;
 import org.apereo.cas.configuration.CasConfigurationProperties;
+import org.apereo.cas.util.CollectionUtils;
 import org.apereo.cas.web.flow.CasWebflowConstants;
 import org.apereo.cas.web.flow.configurer.AbstractCasMultifactorWebflowConfigurer;
 import org.apereo.cas.web.flow.configurer.CasMultifactorWebflowCustomizer;
-import org.apereo.cas.util.CollectionUtils;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpCredential;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.webflow.action.SetAction;
@@ -19,6 +14,10 @@ import org.springframework.webflow.engine.Flow;
 import org.springframework.webflow.engine.ViewState;
 import org.springframework.webflow.engine.builder.BinderConfiguration;
 import org.springframework.webflow.engine.builder.support.FlowBuilderServices;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -93,6 +92,6 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
             createTransitionForState(realSubmitState, CasWebflowConstants.TRANSITION_ID_SUCCESS, CasWebflowConstants.STATE_ID_SUCCESS);
             createTransitionForState(realSubmitState, CasWebflowConstants.TRANSITION_ID_ERROR, CasWebflowConstants.STATE_ID_INIT_LOGIN_FORM);
         });        
-    	registerMultifactorProviderAuthenticationWebflow(getLoginFlow(), MFA_ESUPOTP_EVENT_ID);
+    	registerMultifactorProviderAuthenticationWebflow(getLoginFlow(), MFA_ESUPOTP_EVENT_ID, MFA_ESUPOTP_EVENT_ID);
     }
 }
