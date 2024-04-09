@@ -75,7 +75,7 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
             viewLoginFormState.getEntryActionList().add(setPrincipalAction);
 
             createTransitionForState(viewLoginFormState, CasWebflowConstants.TRANSITION_ID_SUBMIT,
-                CasWebflowConstants.STATE_ID_REAL_SUBMIT, Map.of("bind", Boolean.TRUE, "validate", Boolean.FALSE));
+                CasWebflowConstants.STATE_ID_REAL_SUBMIT, Map.of("bind", Boolean.TRUE, "validate", Boolean.TRUE));
 
             createTransitionForState(viewLoginFormState, "submitCallTransport", "submitTransportEsupOtp");
             ActionState submitTransportEsupOtpState = createActionState(flow, "submitTransportEsupOtp",
