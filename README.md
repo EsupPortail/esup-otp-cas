@@ -72,3 +72,8 @@ In log4j2.xml
     <AppenderRef ref="casFile"/>
 </AsyncLogger>
 ```
+
+Note for authors : to pubish on central maven repository, with JDK 21, and after setting version on gradle.properties :
+```
+./gradlew clean build publish
+```
