@@ -1,7 +1,7 @@
-
 plugins {
     id 'java'
-    id 'base'
+    id 'maven-publish'
+    id 'signing'
 }
 
 repositories {
@@ -22,4 +22,32 @@ dependencies {
     implementation "org.apereo.cas:cas-server-core-webflow-mfa-api:${project.'cas.version'}"
     implementation "org.apereo.cas:cas-server-support-trusted-mfa:${project.'cas.version'}"
     implementation "org.apereo.cas:cas-server-support-trusted-mfa-core:${project.'cas.version'}"
+}
+
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials(PasswordCredentials)
+            authentication {
+              basic(BasicAuthentication)
+            }
+        }
+    }
+}
+
+signing {
+    useGpgCmd()
+    sign publishing.publications.maven
 }
