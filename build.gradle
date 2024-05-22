@@ -25,6 +25,7 @@ dependencies {
 }
 
 java {
+    withJavadocJar()
     withSourcesJar()
 }
 
@@ -32,6 +33,34 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
+            pom {
+                name = 'ESUP-OTP-CAS'
+                description = 'Apereo CAS module of ESUP-Portailusing esup-otp-api - MFA Provider'
+                url = 'https://www.esup-portail.org/wiki/display/esupotp'
+                 licenses {
+                    license {
+                        name = 'The MIT License (MIT)'
+                        url = 'http://opensource.org/licenses/MIT'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/EsupPortail/esup-otp-cas'
+                }
+                developers {
+                    developer {
+                        id = 'floriannari'
+                        name = 'Nari Florian'
+                    }
+                    developer {
+                        id = 'prigaux'
+                        name = 'Pascal Rigaux'
+                    }
+                    developer {
+                        id = 'vbonamy'
+                        name = 'Vincent Bonamy'
+                    }                    
+                }
+            }
         }
     }
     repositories {
