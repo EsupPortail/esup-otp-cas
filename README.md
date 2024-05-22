@@ -1,4 +1,4 @@
-Works on CAS V6.6.15
+Works on CAS V6.6.15.1
 
 ## Config
 
@@ -58,21 +58,12 @@ In cas/build.gradle
 
 ``` groovy
 ...
-repositories {
-  ...
-  maven {
-        url "https://jitpack.io"
-    }
-}
-...
 
 dependencies {
     ...
-    implementation "com.github.EsupPortail:esup-otp-cas:v1.1.5-cas_v6.6.x"
+    implementation "org.esup-portail:esup-otp-cas:v1.1.5-cas_v6.6.x"
 }
 ```
-
-    TIPS: Look for https://jitpack.io/#EsupPortail/esup-otp-cas and check the available version you can use - here v1.1.5-cas_v6.6.x is ok with CAS 6.6.15 but maybe it's not the last one
 
 In log4j2.xml
 ```
