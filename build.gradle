@@ -35,7 +35,7 @@ publishing {
             from components.java
             pom {
                 name = 'ESUP-OTP-CAS'
-                description = 'Apereo CAS module of ESUP-Portailusing esup-otp-api - MFA Provider'
+                description = 'Apereo CAS module of ESUP-Portail using esup-otp-api - MFA Provider'
                 url = 'https://www.esup-portail.org/wiki/display/esupotp'
                  licenses {
                     license {
