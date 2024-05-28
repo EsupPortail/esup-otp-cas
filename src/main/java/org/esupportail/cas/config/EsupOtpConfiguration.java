@@ -107,7 +107,6 @@ public class EsupOtpConfiguration {
      * multifactor trust configuration.                                                                                                                                                                 
      */
     @ConditionalOnClass(value = MultifactorAuthnTrustConfiguration.class)
-    @ConditionalOnProperty(prefix = "esupotp", name = "trustedDeviceEnabled", havingValue = "true", matchIfMissing = true)
     @Configuration("esupOtpMultifactorTrustConfiguration")
     public class EsupOtpMultifactorTrustConfiguration {
 
