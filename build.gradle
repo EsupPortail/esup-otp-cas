@@ -33,6 +33,8 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
+if (project.hasProperty("mavenUsername")) {
+
 signing {
     useGpgCmd()
     sign configurations.archives
@@ -84,3 +86,4 @@ uploadArchives {
  }
 }
 
+}
