@@ -2,181 +2,179 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <title th:utext="#{cas.mfa.esupotp.pagetitle}">CAS MFA ESUP-OTP</title>
-    <link href="../../static/css/cas.css" rel="stylesheet" th:remove="tag" />
+  <title th:utext="#{cas.mfa.esupotp.pagetitle}">CAS MFA ESUP-OTP</title>
+  <link href="../../static/css/cas.css" rel="stylesheet" th:remove="tag" />
 </head>
 
 <body>
-<main role="main" class="container mt-3 mb-3">
+  <main role="main" class="container mt-3 mb-3">
     <div layout:fragment="content">
-            <div id="data" class="d-flex justify-content-center flex-md-row flex-column mdc-card mdc-card-content w-lg-25">
-	      <section id="content" class="login-section login-form">
-		<div class="d-flex flex-column justify-content-between m-auto">
-		  <div th:if="${divNoCodeDisplay}"> <!-- divNoCodeDisplay is false when we hide the input for the code, it means there are only methods using a code => hide this block -->
-		    <div id="serviceui" class="mb-4">
-		      <div class="d-flex align-items-center p-2">
-			<img src="images/webapp.png"><div id="servicedesc" class="ml-2">
-			  <h5 th:text="#{cas.login.pagetitle}">Login</h5>
-			  <h3 th:utext="#{cas.mfa.esupotp.waitingFor}" id="waiting" class="text-center d-none"></h3>
-			  <div id="displayTransport" class="btn btn-info" onClick="switchDiv();return false;">
-			    <span style="cursor:pointer;" th:utext="#{cas.mfa.esupotp.displayOtherMethod}" />
-			  </div>
-			</div>
-		      </div>
-		    </div>
-		  </div>
-		  <div id="loginForm" class="form-wrapper">
-                      <form method="post" id="fm1" th:object="${credential}">
-			<div id="msg" class="errors" th:if="${#fields.hasErrors('*')}">
-                          <span class="mdc-theme--error" th:each="err : ${#fields.errors('*')}" th:utext="${err}"/>
-			</div>
-			  <h3 class="text-center">
-			    <i class="mdi mdi-security"></i>
-			    <span th:utext="#{cas.mfa.esupotp.password}"/>			  
-			  </h3>
-			  <section class="cas-field my-3">
-			    <div class="d-flex">
-                            <label for="token" class="mdc-text-field mdc-text-field--outlined">
-                              <input type="text" class="mdc-text-field__input required" id="token" size="25" tabindex="1"
-				     th:field="*{token}"
-				     th:accesskey="#{screen.welcome.label.password.accesskey}" autocomplete="off"/>
-			      <span class="mdc-notched-outline mdc-notched-outline--upgraded">
-			      <span class="mdc-notched-outline__leading"></span>
-			      <span class="mdc-notched-outline__notch" style="">
-				<span class="mdc-floating-label" style=""><span class="accesskey">C</span>ode :</span>
-			      </span>
-			      <span class="mdc-notched-outline__trailing"></span>
-                            </span>
-			    </label>
-			    </div>
-			  </section>
-                            <button class="mdc-button mdc-button--raised" accesskey="l" id="submitCode"
-				   tabindex="6" type="submit">
-			      <span class="mdc-button__label" th:utext="#{screen.welcome.button.login}"/>
-			    </button>
-			<input type="hidden" name="_eventId_submit" value="Login" />
-			<input type="hidden" name="execution" th:value="${flowExecutionKey}"/>
-			<input type="hidden" name="geolocation"/>
-                      </form>
+      <div id="data" class="d-flex justify-content-center flex-md-row flex-column mdc-card mdc-card-content w-lg-25">
+        <section id="content" class="login-section login-form">
+          <div class="d-flex flex-column justify-content-between m-auto">
+            <div th:if="${divNoCodeDisplay}"> <!-- divNoCodeDisplay is false when we hide the input for the code, it means there are only methods using a code => hide this block -->
+              <div id="serviceui" class="mb-4">
+                <div class="d-flex align-items-center p-2">
+                  <img src="images/webapp.png"><div id="servicedesc" class="ml-2">
+                    <h5 th:text="#{cas.login.pagetitle}">Login</h5>
+                    <h3 th:utext="#{cas.mfa.esupotp.waitingFor}" id="waiting" class="text-center d-none"></h3>
+                    <div id="displayTransport" class="btn btn-info" onClick="switchDiv();return false;">
+                      <span style="cursor:pointer;" th:utext="#{cas.mfa.esupotp.displayOtherMethod}" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="loginForm" class="form-wrapper">
+              <form method="post" id="fm1" th:object="${credential}">
+                <div id="msg" class="errors" th:if="${#fields.hasErrors('*')}">
+                  <span class="mdc-theme--error" th:each="err : ${#fields.errors('*')}" th:utext="${err}" />
+                </div>
+                <h3 class="text-center">
+                  <i class="mdi mdi-security"></i>
+                  <span th:utext="#{cas.mfa.esupotp.password}" />
+                </h3>
+                <section class="cas-field my-3">
+                  <div class="d-flex">
+                    <label for="token" class="mdc-text-field mdc-text-field--outlined">
+                      <input type="text" class="mdc-text-field__input required" id="token" size="25" tabindex="1" 
+                        th:field="*{token}" th:accesskey="#{screen.welcome.label.password.accesskey}" autocomplete="off" />
+                      <span class="mdc-notched-outline mdc-notched-outline--upgraded">
+                        <span class="mdc-notched-outline__leading"></span>
+                        <span class="mdc-notched-outline__notch" style="">
+                          <span class="mdc-floating-label" style=""><span class="accesskey">C</span>ode :</span>
+                        </span>
+                        <span class="mdc-notched-outline__trailing"></span>
+                      </span>
+                    </label>
+                  </div>
+                </section>
+                <button class="mdc-button mdc-button--raised" accesskey="l" id="submitCode" tabindex="6" type="submit">
+                  <span class="mdc-button__label" th:utext="#{screen.welcome.button.login}" />
+                </button>
+                <input type="hidden" name="_eventId_submit" value="Login" />
+                <input type="hidden" name="execution" th:value="${flowExecutionKey}" />
+                <input type="hidden" name="geolocation" />
+              </form>
 
-                    <div id="codeRequest" class="card-header text-center">
+              <div id="codeRequest" class="card-header text-center">
 
-											<div id="transportStatus"></div>
+                <div id="transportStatus"></div>
 
-											<div class="form-wrapper">
-												<form method="post" id="fm2" class="fm-v clearfix">
-													<input type="hidden" name="_eventId" value="submitCallTransport" />
-													<input type="hidden" name="token" th:value="dummy"/>
-													<input type="hidden" name="uid" th:value="${user.uid}" id="inputUid"/>
-													<input type="hidden" name="userHash" th:value="${user.hash}" id="inputUserHash"/>
-													<input type="hidden" name="method" value="" id="inputMethod"/>
-													<input type="hidden" name="transport" value="" id="inputTransport"/>
+                <div class="form-wrapper">
+                  <form method="post" id="fm2" class="fm-v clearfix">
+                    <input type="hidden" name="_eventId" value="submitCallTransport" />
+                    <input type="hidden" name="token" th:value="dummy" />
+                    <input type="hidden" name="uid" th:value="${user.uid}" id="inputUid" />
+                    <input type="hidden" name="userHash" th:value="${user.hash}" id="inputUserHash" />
+                    <input type="hidden" name="method" value="" id="inputMethod" />
+                    <input type="hidden" name="transport" value="" id="inputTransport" />
 
-													<h3 class="text-center" for="token" th:utext="#{cas.mfa.esupotp.receiveCodeFromTransport}" th:unless="${#lists.isEmpty(listTransports)}"/>
+                    <h3 class="text-center" for="token" th:utext="#{cas.mfa.esupotp.receiveCodeFromTransport}" th:unless="${#lists.isEmpty(listTransports)}" />
 
-													<section class="cas-field my-3" th:each="transportMap : ${listTransports}">
-														<input
-																class="mdc-button mdc-button--raised transportInput" style="background-color: rgb(29, 113, 184);  margin-bottom:15px;" type="button"
-																th:value="#{|cas.mfa.esupotp.transport.${transportMap.transport}.${transportMap.method}|}"
-																th:onclick="document.getElementById('inputMethod').value=[[${transportMap.method}]];document.getElementById('inputTransport').value=[[${transportMap.transport}]];"
-														/>
-													</section>
+                    <section class="cas-field my-3" th:each="transportMap : ${listTransports}">
+                      <input
+                        class="mdc-button mdc-button--raised transportInput" style="background-color: rgb(29, 113, 184); margin-bottom:15px;" type="button"
+                        th:value="#{|cas.mfa.esupotp.transport.${transportMap.transport}.${transportMap.method}|}"
+                        th:onclick="document.getElementById('inputMethod').value=[[${transportMap.method}]];document.getElementById('inputTransport').value=[[${transportMap.transport}]];"
+                      />
+                    </section>
 
-													<section class="cas-field my-3">
-														<input class="btn btn-block btn-submit d-none" name="submitCallTransport" accesskey="l"
-																th:value="#{screen.welcome.button.register}" tabindex="6" type="submit" id="submit" />
-														<input type="hidden" name="execution" th:value="${flowExecutionKey}"/>
-													</section>
-												</form>
-											</div>
+                    <section class="cas-field my-3">
+                      <input class="btn btn-block btn-submit d-none" name="submitCallTransport" accesskey="l" 
+                      th:value="#{screen.welcome.button.register}" tabindex="6" type="submit" id="submit" />
+                      <input type="hidden" name="execution" th:value="${flowExecutionKey}" />
+                    </section>
+                  </form>
+                </div>
 
-										</div>
-		  </div>
-		  </section>
-            <script th:src="${apiUrl} + '/js/socket.io.js'"></script>
-            <script th:inline="javascript">
-                    // submit transport choice
-                    $(document).on('click', 'input.transportInput', function(){
-                        if($(this).val() != 'push'){
-                            submitCodeRequest();
-                        } else {
-                            submitPushCodeRequest();
-                        }
-                    });
-                
-                // (ugly) syntax explained here: https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#javascript-natural-templates
-                var apiUrl = /*[[${apiUrl}]]*/ "";
-                var divNoCodeDisplay = /*[[${divNoCodeDisplay}]]*/ false;
-                var pushAsked = /*[[${pushAsked}]]*/ false;
-                var uid = /*[[${user.getUid()}]]*/ "";
-                var userHash = /*[[${user.getHash()}]]*/ "";
+              </div>
+            </div>
+          </div>
+        </section>
+        <script th:src="${apiUrl} + '/js/socket.io.js'"></script>
+        <script th:inline="javascript">
+          // submit transport choice
+          $(document).on('click', 'input.transportInput', function () {
+              if ($(this).val() != 'push') {
+                  submitCodeRequest();
+              } else {
+                  submitPushCodeRequest();
+              }
+          });
 
-                activateWaitingFor();
-                
-                // if waitingFor method is activated, waitingForDiv will appear else TransportDiv will appear
-                function activateWaitingFor(){
-                    if(divNoCodeDisplay) {
-		        switchDiv();
-                        initializeSocket();
-                    }
-                    if(pushAsked) {
-                    	submitPushCodeRequest();
-                    }
-                }
-                
-                function switchDiv(){
-                    $('#loginForm').toggleClass('d-none');
-                    $('#waiting').toggleClass('d-none');
-                    $('#codeRequest').toggleClass('d-none');
-                }
-                
-                function submitCodeRequest(){
-                    var $outputDiv = $('#transportStatus');
-                    var eventId = "submitCallTransport";
-                    $.ajax({
-                        type: "POST",
-                        data: $("#fm2").serialize(),
-                        url: "#"
-                    }).done(function(data){
-                        $outputDiv.html(data);
-                    }).fail(function(error){
-                        $outputDiv.html(error);
-                    });
-                }
-                
-                function submitPushCodeRequest() {
-                    $.ajax({
-                        type: 'POST',
-                        url: apiUrl + '/users/'+ uid +'/methods/push/transports/push/' + userHash
-                    }).done(function(data) {
-                        if (data.code != "Ok") {
-                            console.log("Something is broken : " + data);
-                        }
-                    });
-                }
-                
-                function initializeSocket() {
-                    var socket = io.connect(apiUrl, {
-                        reconnect: true, 
-                        path: "/sockets", 
-                        query: 'uid=' + uid + '&hash=' + userHash + '&app=cas'
-                    });
-                    socket.on('connect', function () {
-                    });          
-                    socket.on('userAuth', function (data) {
-                        if (data.code == "Ok") {
-                            $('#token').val(data.otp);
-                            $('#submitCode').click();
-                        }
-                    });
-                }
+          // (ugly) syntax explained here: https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#javascript-natural-templates
+          var apiUrl = /*[[${apiUrl}]]*/ "";
+          var divNoCodeDisplay = /*[[${divNoCodeDisplay}]]*/ false;
+          var pushAsked = /*[[${pushAsked}]]*/ false;
+          var uid = /*[[${user.getUid()}]]*/ "";
+          var userHash = /*[[${user.getHash()}]]*/ "";
 
-            </script>
+          activateWaitingFor();
+
+          // if waitingFor method is activated, waitingForDiv will appear else TransportDiv will appear
+          function activateWaitingFor() {
+              if (divNoCodeDisplay) {
+                  switchDiv();
+                  initializeSocket();
+              }
+              if (pushAsked) {
+                  submitPushCodeRequest();
+              }
+          }
+
+          function switchDiv() {
+              $('#loginForm').toggleClass('d-none');
+              $('#waiting').toggleClass('d-none');
+              $('#codeRequest').toggleClass('d-none');
+          }
+
+          function submitCodeRequest() {
+              var $outputDiv = $('#transportStatus');
+              var eventId = "submitCallTransport";
+              $.ajax({
+                  type: "POST",
+                  data: $("#fm2").serialize(),
+                  url: "#"
+              }).done(function (data) {
+                  $outputDiv.html(data);
+              }).fail(function (error) {
+                  $outputDiv.html(error);
+              });
+          }
+
+          function submitPushCodeRequest() {
+              $.ajax({
+                  type: 'POST',
+                  url: apiUrl + '/users/' + uid + '/methods/push/transports/push/' + userHash
+              }).done(function (data) {
+                  if (data.code != "Ok") {
+                      console.log("Something is broken : " + data);
+                  }
+              });
+          }
+
+          function initializeSocket() {
+              var socket = io.connect(apiUrl, {
+                  reconnect: true,
+                  path: "/sockets",
+                  query: 'uid=' + uid + '&hash=' + userHash + '&app=cas'
+              });
+              socket.on('connect', function () {
+              });
+              socket.on('userAuth', function (data) {
+                  if (data.code == "Ok") {
+                      $('#token').val(data.otp);
+                      $('#submitCode').click();
+                  }
+              });
+          }
+        </script>
+      </div>
     </div>
-</div>
-</main>
-    </body>
+  </main>
+</body>
 </html>
