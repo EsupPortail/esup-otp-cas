@@ -58,12 +58,17 @@ public class EsupOtpService {
 		Map <String, String> transport;
 
 		for (EsupOtpMethod method : methods) {
-			if (method.getActive() && method.getTransports().size() > 0) {
-				for(String transportName : method.getTransports() ){                
-					transport = new HashMap<>();  
-					transport.put("method", method.getName());
-					transport.put("transport", transportName);
-					transports.add(transport);
+			if (method.getActive()) {
+				if(method.getName().equals("webauthn") && method.getTransports().isEmpty()) {
+					method.getTransports().add("webauthn");
+				}
+				if (method.getTransports().size() > 0) {
+					for(String transportName : method.getTransports() ){
+						transport = new HashMap<>();
+						transport.put("method", method.getName());
+						transport.put("transport", transportName);
+						transports.add(transport);
+					}
 				}
 			}
 		}

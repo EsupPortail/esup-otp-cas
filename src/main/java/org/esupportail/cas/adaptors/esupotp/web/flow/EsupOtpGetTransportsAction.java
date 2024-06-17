@@ -47,6 +47,7 @@ public class EsupOtpGetTransportsAction extends AbstractMultifactorAuthenticatio
         final String uid = WebUtils.getAuthentication(context).getPrincipal().getId();
         String userHash = esupOtpService.getUserHash(uid);
         boolean pushAsked = false;
+        boolean webauthnAsked = false;
 
         requestContext.getFlowScope().put("uid", uid);
         requestContext.getFlowScope().put("userHash", userHash);
@@ -72,6 +73,8 @@ public class EsupOtpGetTransportsAction extends AbstractMultifactorAuthenticatio
                     listMethods.add(m);
                     if("push".equals(m.getName()) && m.getActive()) {
                     	pushAsked = true;
+                    } else if("webauthn".equals(m.getName()) && m.getActive()) {
+                    	webauthnAsked = true;
                     }
                 }
             }
@@ -79,6 +82,7 @@ public class EsupOtpGetTransportsAction extends AbstractMultifactorAuthenticatio
             // will give order to the page to display only WaitingFor block if needed
             requestContext.getFlowScope().put("divNoCodeDisplay", defaultWaitingFor);
             requestContext.getFlowScope().put("pushAsked", pushAsked);
+            requestContext.getFlowScope().put("webauthnAsked", webauthnAsked);
             
             user = new EsupOtpUser(uid, userHash, listMethods, transports);
         } catch (JSONException e) {
@@ -92,6 +96,4 @@ public class EsupOtpGetTransportsAction extends AbstractMultifactorAuthenticatio
 
         return new EventFactorySupport().event(this, "authWithCode");
     }
-
-
 }
