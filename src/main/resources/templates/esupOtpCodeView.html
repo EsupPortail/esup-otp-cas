@@ -2,6 +2,7 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 
 <head>
+  <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
@@ -80,6 +81,7 @@
                         class="mdc-button mdc-button--raised transportInput" style="background-color: rgb(29, 113, 184); margin-bottom:15px;" type="button"
                         th:value="#{|cas.mfa.esupotp.transport.${transportMap.transport}.${transportMap.method}|}"
                         th:onclick="document.getElementById('inputMethod').value=[[${transportMap.method}]];document.getElementById('inputTransport').value=[[${transportMap.transport}]];"
+                        data-th-attr="data-method=${transportMap.method},data-transport=${transportMap.transport}"
                       />
                     </section>
 
@@ -99,10 +101,14 @@
         <script th:inline="javascript">
           // submit transport choice
           $(document).on('click', 'input.transportInput', function () {
-              if ($(this).val() != 'push') {
-                  submitCodeRequest();
-              } else {
-                  submitPushCodeRequest();
+              const transport = $(this).data('transport');
+              switch(transport){
+                  case 'webauthn':
+                      return submitWebauthnCodeRequest();
+                  case 'push':
+                      return submitPushCodeRequest();
+                  default:
+                      return submitCodeRequest();
               }
           });
 
@@ -110,8 +116,20 @@
           var apiUrl = /*[[${apiUrl}]]*/ "";
           var divNoCodeDisplay = /*[[${divNoCodeDisplay}]]*/ false;
           var pushAsked = /*[[${pushAsked}]]*/ false;
+          var webauthnAsked = /*[[${webauthnAsked}]]*/ false;
           var uid = /*[[${user.getUid()}]]*/ "";
           var userHash = /*[[${user.getHash()}]]*/ "";
+          
+          const messages = {
+              or: /*[[#{cas.mfa.esupotp.or}]]*/ "",
+              webauthn: {
+                  factorTitle: /*[[#{cas.mfa.esupotp.webauthn.factorTitle}]]*/ "",
+                  instructions: /*[[#{cas.mfa.esupotp.webauthn.instructions}]]*/ "",
+                  failed: /*[[#{cas.mfa.esupotp.webauthn.failed}]]*/ "",
+                  retry: /*[[#{cas.mfa.esupotp.webauthn.retry}]]*/ "",
+                  canceled: /*[[#{cas.mfa.esupotp.webauthn.canceled}]]*/ "",
+              }
+          };
 
           activateWaitingFor();
 
@@ -121,7 +139,10 @@
                   switchDiv();
                   initializeSocket();
               }
-              if (pushAsked) {
+
+              if (webauthnAsked) {
+                  submitWebauthnCodeRequest();
+              } else if (pushAsked) {
                   submitPushCodeRequest();
               }
           }
@@ -133,17 +154,19 @@
           }
 
           function submitCodeRequest() {
-              var $outputDiv = $('#transportStatus');
-              var eventId = "submitCallTransport";
               $.ajax({
                   type: "POST",
                   data: $("#fm2").serialize(),
                   url: "#"
               }).done(function (data) {
-                  $outputDiv.html(data);
+                  setTransportStatus(data);
               }).fail(function (error) {
-                  $outputDiv.html(error);
+                  setTransportStatus(error);
               });
+          }
+
+          function setTransportStatus(html) {
+              $('#transportStatus').html(html);
           }
 
           function submitPushCodeRequest() {
@@ -167,10 +190,222 @@
               });
               socket.on('userAuth', function (data) {
                   if (data.code == "Ok") {
-                      $('#token').val(data.otp);
-                      $('#submitCode').click();
+                      submitCode(data.otp);
                   }
               });
+          }
+          
+          function submitCode(code) {
+              $('#token').val(code);
+              $('#submitCode').click();
+          }
+                    
+          async function submitWebauthnCodeRequest() {
+
+              function displayTitle({title, desc = ''}) {
+                  setTransportStatus("<p>" + title + "<br>" + desc + "</p>")
+              }
+              
+              // PublicKeyCredential can not be serialized
+              // because it contains some ArrayBuffers, which
+              // can not be serialized.
+              // This just translates the buffer to its' 'safe'
+              // version.
+              // This is only for the AUTHENTICATION part
+              // It is slightly different from what is
+              // used for registration
+              const SerializePKC = PKC => {
+                  return {
+                      id: PKC.id,
+                      type: PKC.type,
+                      rawId: bufferToBase64URLString(PKC.rawId),
+                      response: {
+                          authenticatorData: bufferToBase64URLString(PKC.response.authenticatorData),
+                          clientDataJSON: bufferToBase64URLString(PKC.response.clientDataJSON),
+                          signature: bufferToBase64URLString(PKC.response.signature),
+                          userHandle: PKC.response.userHandle ? bufferToBase64URLString(PKC.response.userHandle) : undefined,
+                      }
+                  };
+              }
+              
+          
+              const webauthnData = await (fetch(`${apiUrl}/users/${uid}/methods/webauthn/secret/${userHash}`, {method: "POST"})
+                  .then(res => res.json())
+              );
+                  
+              // afficher le titre
+              if(webauthnData.auths.length === 0) {
+                  displayTitle({
+                   title: "Vous n'avez aucun facteur enregistré",
+                   desc: "Essayez une autre méthode"
+                  });
+              } else {
+                  let spans = webauthnData.auths.map(function authToSpan(authenticator) {
+                      const name = authenticator.name || "clé sans nom";
+                      const title = authenticator.name ? 
+                          messages.webauthn.factorTitle.replace("%NAME%", authenticator.name) :
+                          "Vous n'avez pas donné de nom à ce facteur. Allez dans vos paramètres pour donner un nom."
+                      return `<span class="factor" title="${title}">${name}</span>`;
+                  });
+                  let factorsString;
+                  
+                  if(spans.length === 1) {
+                      factorsString = spans[0];
+                  } else if(spans.length === 2) {
+                      factorsString = spans.join(" " + messages.or + " ");
+                  } else {
+                      factorsString = spans.slice(0, -1).join(', ') + ', ' + messages.or + ' ' + spans.slice(-1);
+                  }
+                  displayTitle({
+                      title: messages.webauthn.instructions.replace("%FACTORS_STRING%", factorsString)
+                  });
+              }
+              
+              const publicKeyCredentialRequestOptions = {
+                  challenge: base64URLStringToBuffer(webauthnData.nonce),
+                  rp: webauthnData.rp,
+                  rpId: webauthnData.rp.id,
+                  pubKeyCredParams: webauthnData.pubKeyTypes,
+                  // user has 3 * 60 seconds to register
+                  timeout: 3 * 60000,
+                  // leaks data about the user if in direct mode.
+                  attestation: "none",
+                  // Use registered credentials
+                  allowCredentials: webauthnData.auths.map(a => ({id: base64URLStringToBuffer(a.credentialID), type: "public-key"})),
+              };
+              
+              await afterNextPaint();
+              
+              let assertion;
+              try {
+                  // authenticate
+                  assertion = await navigator.credentials.get({
+                      publicKey: publicKeyCredentialRequestOptions
+                  });
+              }
+              catch(e) {
+                  if(e.name === "NotAllowedError") {
+                      if(e.message === "CredentialContainer request is not allowed.") {
+                          displayTitle({
+                              title: messages.webauthn.failed,
+                              desc: messages.webauthn.retry,
+                          })
+                          // There is a firefox bug where if you have your console opened when you try to call this, it fails
+                          console.info("If the authentication crashed and you had your firefox console open when you tried to login, please close it and try again, as it may be due to a firefox bug. You can ignore this message otherwise.");
+                      }
+                      else {
+                          displayTitle({
+                              title: messages.webauthn.failed,
+                              desc: messages.webauthn.canceled,
+                          })
+                      }
+                  }
+                  return;
+              }
+              
+              if(assertion === undefined) {
+                  displayTitle({
+                      title: messages.webauthn.failed,
+                      desc: messages.webauthn.retry,
+                  })
+                  return;
+              }
+              
+              const res = await fetch(`${apiUrl}/users/${uid}/webauthn/login/${userHash}`, {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                      //note: credID is contained in response, as response.id
+                      //note: response.id and response.rawId are the same when sending
+                      // because rawId is an arraybuffer, and serializePKC converts it to
+                      // a string, causing to equal id.
+                      //=> 3x the same id is sent, redundant
+                      response: SerializePKC(assertion),
+                      credID: assertion.id
+                  })
+              });
+              
+              const verifdata = await res.json();
+              
+              // Success response
+              if(200 <= res.status && res.status < 300) {
+                  $('#token').val(verifdata.token);
+                  $('#fm1').submit();
+              }
+              // failed
+              else {
+                  if(typeof verifdata.message === "object") {
+                      displayTitle({
+                          title: messages.webauthn.failed,
+                          desc: verifdata.message.title + "<br>" + verifdata.message.desc,
+                      })
+                  }
+              }
+          }
+          
+          /**
+           * wait for the browser to update the displayed title (otherwise, on Firefox, displayTitle() is omitted)
+           */
+           async function afterNextPaint() {
+               return new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 0)));
+           }
+
+          /** base64url helper functions **/
+          /**
+          * Convert from a Base64URL-encoded string to an Array Buffer. Best used when converting a
+          * credential ID from a JSON string to an ArrayBuffer, like in allowCredentials or
+          * excludeCredentials
+          *
+          * Helper method to compliment `bufferToBase64URLString`
+          */
+          function base64URLStringToBuffer(base64URLString) {
+              // Convert from Base64URL to Base64
+              const base64 = base64URLString.replace(/-/g, '+').replace(/_/g, '/');
+              /**
+               * Pad with '=' until it's a multiple of four
+               * (4 - (85 % 4 = 1) = 3) % 4 = 3 padding
+               * (4 - (86 % 4 = 2) = 2) % 4 = 2 padding
+               * (4 - (87 % 4 = 3) = 1) % 4 = 1 padding
+               * (4 - (88 % 4 = 0) = 4) % 4 = 0 padding
+               */
+              const padLength = (4 - (base64.length % 4)) % 4;
+              const padded = base64.padEnd(base64.length + padLength, '=');
+
+              // Convert to a binary string
+              const binary = atob(padded);
+
+              // Convert binary string to buffer
+              const buffer = new ArrayBuffer(binary.length);
+              const bytes = new Uint8Array(buffer);
+
+              for (let i = 0; i < binary.length; i++) {
+                  bytes[i] = binary.charCodeAt(i);
+              }
+
+              return buffer;
+          }
+
+          /**
+          * Convert the given array buffer into a Base64URL-encoded string. Ideal for converting various
+          * credential response ArrayBuffers to string for sending back to the server as JSON.
+          *
+          * Helper method to compliment `base64URLStringToBuffer`
+          * 
+          * source: https://github.com/MasterKale/SimpleWebAuthn/blob/master/packages/browser/src/helpers/bufferToBase64URLString.ts
+          */
+          function bufferToBase64URLString(buffer) {
+              const bytes = new Uint8Array(buffer);
+              let str = '';
+
+              for (const charCode of bytes) {
+                  str += String.fromCharCode(charCode);
+              }
+
+              const base64String = btoa(str);
+
+              return base64String.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
           }
         </script>
       </div>
