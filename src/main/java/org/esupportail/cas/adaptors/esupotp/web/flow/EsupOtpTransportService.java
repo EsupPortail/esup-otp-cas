@@ -46,6 +46,8 @@ public class EsupOtpTransportService {
 		HttpURLConnection con = null;
 		con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("POST");
+		con.setDoOutput(true);
+		con.getOutputStream().close();
         logger.info("mfa-esupotp request send to [{}]", (String) url);
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		String inputLine;
