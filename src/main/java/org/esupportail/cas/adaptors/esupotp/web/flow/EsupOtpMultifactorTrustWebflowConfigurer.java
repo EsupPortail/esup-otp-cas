@@ -2,6 +2,7 @@ package org.esupportail.cas.adaptors.esupotp.web.flow;
 
 import lombok.val;
 import org.apereo.cas.configuration.CasConfigurationProperties;
+import org.apereo.cas.trusted.util.MultifactorAuthenticationTrustUtils;
 import org.apereo.cas.trusted.web.flow.AbstractMultifactorTrustedDeviceWebflowConfigurer;
 import org.apereo.cas.trusted.web.flow.MultifactorAuthenticationTrustBean;
 import org.apereo.cas.web.flow.configurer.CasMultifactorWebflowCustomizer;
@@ -42,7 +43,7 @@ public class EsupOtpMultifactorTrustWebflowConfigurer extends AbstractMultifacto
             val flowId = Arrays.stream(flowDefinitionRegistry.getFlowDefinitionIds()).findFirst().get();
             val flow = (Flow) flowDefinitionRegistry.getFlowDefinition(flowId);
             flow.getStartActionList().add(requestContext -> {
-                val deviceBean = WebUtils.getMultifactorAuthenticationTrustRecord(requestContext, MultifactorAuthenticationTrustBean.class);
+                val deviceBean = MultifactorAuthenticationTrustUtils.getMultifactorAuthenticationTrustRecord(requestContext, MultifactorAuthenticationTrustBean.class);
                 val deviceRecord = deviceBean.get();
                 deviceRecord.setExpiration(deviceRegistrationExpirationInSeconds);
                 deviceRecord.setTimeUnit(ChronoUnit.SECONDS);

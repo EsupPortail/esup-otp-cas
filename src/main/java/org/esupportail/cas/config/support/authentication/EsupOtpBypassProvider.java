@@ -16,6 +16,7 @@ import org.esupportail.cas.configuration.model.support.mfa.EsupOtpMultifactorPro
 import org.json.JSONObject;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 
 @Slf4j
 public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProviderBypassEvaluator {
@@ -27,8 +28,8 @@ public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProvider
     EsupOtpConfigurationProperties esupOtpConfigurationProperties;
     
 	public EsupOtpBypassProvider(EsupOtpService esupOtpService,
-			EsupOtpConfigurationProperties esupOtpConfigurationProperties) {
-		super(EsupOtpMultifactorProperties.DEFAULT_IDENTIFIER);
+			EsupOtpConfigurationProperties esupOtpConfigurationProperties, final ApplicationContext applicationContext) {
+		super(EsupOtpMultifactorProperties.DEFAULT_IDENTIFIER, applicationContext);
 		this.esupOtpService = esupOtpService;
 		this.esupOtpConfigurationProperties = esupOtpConfigurationProperties;
 	}

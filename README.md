@@ -1,4 +1,4 @@
-Works on Apereo CAS V 7.0.9 - https://github.com/apereo/cas
+Works on Apereo CAS V 7.1.1 - https://github.com/apereo/cas
 
 ## Config
 
@@ -24,6 +24,9 @@ cas.authn.mfa.globalProviderId=mfa-esupotp
 
 # Add translations, you will need to check what are the default from CAS "Message Bundles" properties
 cas.messageBundle.baseNames=classpath:custom_messages,classpath:messages,classpath:esupotp_message
+
+# Add your esup-otp-api in Content-Security-Policy:
+cas.http-web-request.header.content-security-policy=script-src 'self' 'unsafe-inline' 'unsafe-eval' https://esup-otp-api.univ-ville.fr/; object-src 'none'; worker-src 'self' blob: 'unsafe-inline' 
 ```
 If you want to trust devices for 7 days, you can add this in cas.properties
 ```
@@ -61,7 +64,7 @@ In cas/build.gradle
 
 dependencies {
     ...
-    implementation "org.esup-portail:esup-otp-cas:v1.2.0-cas_v7.0.x"
+    implementation "org.esup-portail:esup-otp-cas:v1.2.1-cas_v7.1.x"
 }
 ```
 
