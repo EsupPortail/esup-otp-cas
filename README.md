@@ -76,6 +76,33 @@ In log4j2.xml
 </AsyncLogger>
 ```
 
+If you want to use an untagged version, you can use jitpack.io :
+
+Add in cas/build.gradle
+``` groovy
+...
+repositories {
+    ...
+    maven {
+        url "https://jitpack.io"
+    }
+}
+...
+
+dependencies {
+    ...
+    implementation "com.github.EsupPortail:esup-otp-cas:1153552cf1"
+}
+```
+
+TIPS: Look for https://jitpack.io/#EsupPortail/esup-otp-cas and check the available version you can use - here 1153552cf1 is ok with CAS 7.1.0 but maybe it's not the last one
+
+
+If you want to package locally, with JDK 21 :
+```
+./gradlew clean build
+```
+
 Note for authors : to publish on central maven repository, with JDK 21, and after setting version on gradle.properties :
 ```
 ./gradlew clean build publish
