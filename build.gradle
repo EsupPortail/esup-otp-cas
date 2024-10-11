@@ -76,6 +76,12 @@ publishing {
     }
 }
 
+tasks.withType(Sign).configureEach {
+    onlyIf("sign on maven central only to avoid sign on local and on jitpack") {
+        return gradle.taskGraph.hasTask(":publish");
+    }
+}
+
 signing {
     useGpgCmd()
     sign publishing.publications.maven
