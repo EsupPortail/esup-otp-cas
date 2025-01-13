@@ -118,7 +118,4 @@ public class EsupOtpCredential extends AbstractCredential {
             .isEquals();
     }
 
-    public boolean isValid() {
-        return StringUtils.isNotBlank(this.token);
-    }
 }
