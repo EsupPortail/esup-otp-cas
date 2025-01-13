@@ -1,5 +1,6 @@
 package org.esupportail.cas.adaptors.esupotp;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -118,6 +119,6 @@ public class EsupOtpCredential extends AbstractCredential {
     }
 
     public boolean isValid() {
-        return this.token != null;
+        return StringUtils.isNotBlank(this.token);
     }
 }
