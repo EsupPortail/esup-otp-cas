@@ -1,4 +1,4 @@
-Works on Apereo CAS V 7.0.9 - https://github.com/apereo/cas
+Works on Apereo CAS V 7.0.10 - https://github.com/apereo/cas
 
 ## Config
 
@@ -61,7 +61,7 @@ In cas/build.gradle
 
 dependencies {
     ...
-    implementation "org.esup-portail:esup-otp-cas:v1.2.0-cas_v7.0.x"
+    implementation "org.esup-portail:esup-otp-cas:v1.2.3-cas_v7.0.x"
 }
 ```
 
