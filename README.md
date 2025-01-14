@@ -1,4 +1,4 @@
-Works on Apereo CAS V 7.1.1 - https://github.com/apereo/cas
+Works on Apereo CAS V 7.1.3 - https://github.com/apereo/cas
 
 ## Config
 
@@ -64,7 +64,7 @@ In cas/build.gradle
 
 dependencies {
     ...
-    implementation "org.esup-portail:esup-otp-cas:v1.2.2-cas_v7.1.x"
+    implementation "org.esup-portail:esup-otp-cas:v1.2.3-cas_v7.1.x"
 }
 ```
 
@@ -91,11 +91,11 @@ repositories {
 
 dependencies {
     ...
-    implementation "com.github.EsupPortail:esup-otp-cas:08371e0658"
+    implementation "com.github.EsupPortail:esup-otp-cas:master"
 }
 ```
 
-TIPS: Look for https://jitpack.io/#EsupPortail/esup-otp-cas and check the available version you can use - here 08371e0658 is ok with CAS 7.1.0 but maybe it's not the last one
+TIPS: Look for https://jitpack.io/#EsupPortail/esup-otp-cas and check the available version you can use
 
 
 If you want to package locally, with JDK 21 :
