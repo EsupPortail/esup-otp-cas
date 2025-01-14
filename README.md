@@ -61,7 +61,7 @@ In cas/build.gradle
 
 dependencies {
     ...
-    implementation "org.esup-portail:esup-otp-cas:v1.2.0-cas_v6.6.x"
+    implementation "org.esup-portail:esup-otp-cas:v1.2.3-cas_v6.6.x"
 }
 ```
 
