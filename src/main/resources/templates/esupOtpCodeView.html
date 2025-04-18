@@ -145,7 +145,7 @@
                   initializeSocket();
               }
 
-              if (webauthnAsked) {
+              if (webauthnAsked && isWebauthnSupported()) {
                   submitWebauthnCodeRequest();
               } else if (pushAsked) {
                   submitPushCodeRequest();
@@ -215,7 +215,12 @@
               $('#token').val(code);
               $('#submitCode').click();
           }
-                    
+
+          function isWebauthnSupported() {
+              return navigator.credentials?.get &&
+                  window.PublicKeyCredential;
+          }
+
           async function submitWebauthnCodeRequest() {
 
               function displayTitle({title, desc = ''}) {
