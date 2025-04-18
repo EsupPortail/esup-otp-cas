@@ -1,8 +1,5 @@
 package org.esupportail.cas.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apereo.cas.configuration.model.support.mfa.BaseMultifactorAuthenticationProviderProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +17,10 @@ import lombok.Setter;
 @PropertySource(ignoreResourceNotFound = true, value={"classpath:esupotp.properties", "file:/var/cas/config/esupotp.properties", "file:/opt/cas/config/esupotp.properties", "file:/etc/cas/config/esupotp.properties", "file:${cas.standalone.configurationDirectory}/esupotp.properties"})
 @ConfigurationProperties(prefix = "esupotp", ignoreUnknownFields = false)
 public class EsupOtpConfigurationProperties extends BaseMultifactorAuthenticationProviderProperties implements InitializingBean {
+	/**
+	 * Provider id by default.
+	 */
+	public static final String DEFAULT_IDENTIFIER = "mfa-esupotp";
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,7 +35,11 @@ public class EsupOtpConfigurationProperties extends BaseMultifactorAuthenticatio
 	Boolean byPassIfNoEsupOtpMethodIsActive = true;
 	
 	Boolean trustedDeviceEnabled = true;
-	
+
+	public EsupOtpConfigurationProperties() {
+		setId(DEFAULT_IDENTIFIER);
+	}
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		log.info("rank : {}", this.getRank());
@@ -43,6 +48,7 @@ public class EsupOtpConfigurationProperties extends BaseMultifactorAuthenticatio
 		log.info("apiPassword : {}", apiPassword);
 		log.info("byPassIfNoEsupOtpMethodIsActive : {}", byPassIfNoEsupOtpMethodIsActive);
 		log.info("trustedDeviceEnabled : {}", trustedDeviceEnabled);
+		log.info("failureMode : {}", getFailureMode());
 	}
 	
 }
