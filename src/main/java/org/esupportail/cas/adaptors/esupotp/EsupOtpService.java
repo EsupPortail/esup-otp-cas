@@ -60,8 +60,15 @@ public class EsupOtpService {
 
 		for (EsupOtpMethod method : methods) {
 			if (method.getActive()) {
-				if(method.getName().equals("webauthn") && method.getTransports().isEmpty()) {
-					method.getTransports().add("webauthn");
+				if (method.getTransports().isEmpty()) {
+					switch (method.getName()) {
+					case "webauthn":
+					case "passcode_grid":
+						method.getTransports().add(method.getName());
+						break;
+					default:
+						break;
+					}
 				}
 				if (method.getTransports().size() > 0) {
 					for(String transportName : method.getTransports() ){
