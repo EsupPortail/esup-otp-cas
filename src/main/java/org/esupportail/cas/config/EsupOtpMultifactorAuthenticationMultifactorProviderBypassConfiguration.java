@@ -1,6 +1,7 @@
 package org.esupportail.cas.config;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apereo.cas.authentication.MultifactorAuthenticationFailureModeEvaluator;
 import org.apereo.cas.authentication.bypass.AuthenticationMultifactorAuthenticationProviderBypassEvaluator;
 import org.apereo.cas.authentication.bypass.ChainingMultifactorAuthenticationProviderBypassEvaluator;
 import org.apereo.cas.authentication.bypass.CredentialMultifactorAuthenticationProviderBypassEvaluator;
@@ -17,6 +18,7 @@ import org.apereo.cas.configuration.model.support.mfa.MultifactorAuthenticationP
 import org.esupportail.cas.adaptors.esupotp.EsupOtpService;
 import org.esupportail.cas.config.support.authentication.EsupOtpBypassProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -36,6 +38,10 @@ public class EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfigurat
 
     @Autowired
     private EsupOtpService esupOtpService;
+
+    @Autowired
+    @Qualifier("failureModeEvaluator")
+    private MultifactorAuthenticationFailureModeEvaluator failureModeEvaluator;
     
     @ConditionalOnMissingBean(name = "esupOtpMultifactorBypassEvaluator")
     @Bean
@@ -44,7 +50,7 @@ public class EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfigurat
     	ChainingMultifactorAuthenticationProviderBypassEvaluator bypass = new DefaultChainingMultifactorAuthenticationBypassProvider();
     	MultifactorAuthenticationProviderBypassProperties props = esupOtpConfigurationProperties.getBypass();
     	
-    	bypass.addMultifactorAuthenticationProviderBypassEvaluator(new EsupOtpBypassProvider(esupOtpService, esupOtpConfigurationProperties));
+    	bypass.addMultifactorAuthenticationProviderBypassEvaluator(new EsupOtpBypassProvider(esupOtpService, esupOtpConfigurationProperties, failureModeEvaluator));
     	
         if (StringUtils.isNotBlank(props.getPrincipalAttributeName())) {
             bypass.addMultifactorAuthenticationProviderBypassEvaluator(esupOtpMultifactorPrincipalMultifactorAuthenticationProviderBypass());

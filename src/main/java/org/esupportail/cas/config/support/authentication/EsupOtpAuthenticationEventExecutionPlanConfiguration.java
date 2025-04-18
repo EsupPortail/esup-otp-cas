@@ -15,7 +15,6 @@ import org.esupportail.cas.adaptors.esupotp.EsupOtpAuthenticationHandler;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpMultifactorAuthenticationProvider;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpService;
 import org.esupportail.cas.config.EsupOtpConfigurationProperties;
-import org.esupportail.cas.configuration.model.support.mfa.EsupOtpMultifactorProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -53,23 +52,12 @@ public class EsupOtpAuthenticationEventExecutionPlanConfiguration {
     @Qualifier("failureModeEvaluator")
     private MultifactorAuthenticationFailureModeEvaluator failureModeEvaluator;
 
-    /* Avoid to modify org.apereo.cas.configuration.model.support.mfa.MultifactorAuthenticationProperties
-     * Not sure about the result in the future
-     */
-    @Bean
-    public EsupOtpMultifactorProperties esupotpMultifactorProperties() {
-        // that line replace casProperties.getAuthn().getMfa().getEsupOtp()
-    	EsupOtpMultifactorProperties esupOtpMultifactorProperties = new EsupOtpMultifactorProperties();
-    	esupOtpMultifactorProperties.setOrder(esupOtpConfigurationProperties.getRank());
-    	return esupOtpMultifactorProperties;
-    }
-
     @ConditionalOnMissingBean(name = "esupotpAuthenticationHandler")
     @Bean
     @RefreshScope
     public AuthenticationHandler esupotpAuthenticationHandler() {
         return new EsupOtpAuthenticationHandler(
-        	esupotpMultifactorProperties().getName(), 
+        	esupOtpConfigurationProperties.getName(), 
         	servicesManager, 
         	esupotpPrincipalFactory(),
         	esupOtpConfigurationProperties,
@@ -91,13 +79,12 @@ public class EsupOtpAuthenticationEventExecutionPlanConfiguration {
     @RefreshScope(proxyMode = ScopedProxyMode.DEFAULT)
     @ConditionalOnMissingBean(name = "esupotpAuthenticationProvider")
 	public MultifactorAuthenticationProvider esupotpAuthenticationProvider() {
-        final EsupOtpMultifactorProperties esupotp = esupotpMultifactorProperties();
         final EsupOtpMultifactorAuthenticationProvider p = new EsupOtpMultifactorAuthenticationProvider();
         p.setBypassEvaluator(esupOtpMultifactorBypassEvaluator);
-        p.setFailureMode(esupotp.getFailureMode());
+        p.setFailureMode(esupOtpConfigurationProperties.getFailureMode());
         p.setFailureModeEvaluator(failureModeEvaluator);
-        p.setOrder(esupotp.getRank());
-        p.setId(esupotp.getId());
+        p.setOrder(esupOtpConfigurationProperties.getRank());
+        p.setId(esupOtpConfigurationProperties.getId());
 		return p;
 	}
 	

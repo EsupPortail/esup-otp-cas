@@ -2,12 +2,8 @@ package org.esupportail.cas.adaptors.esupotp;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apereo.cas.authentication.AbstractMultifactorAuthenticationProvider;
-import org.apereo.cas.authentication.AuthenticationHandler;
 import org.apereo.cas.services.RegisteredService;
 import org.esupportail.cas.config.EsupOtpConfigurationProperties;
-import org.esupportail.cas.configuration.model.support.mfa.EsupOtpMultifactorProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  * The authentication provider
@@ -21,7 +17,7 @@ public class EsupOtpMultifactorAuthenticationProvider extends AbstractMultifacto
         
     @Override
     public String getId() {
-        return StringUtils.defaultIfBlank(super.getId(), EsupOtpMultifactorProperties.DEFAULT_IDENTIFIER);
+        return StringUtils.defaultIfBlank(super.getId(), EsupOtpConfigurationProperties.DEFAULT_IDENTIFIER);
     }
 
     @Override

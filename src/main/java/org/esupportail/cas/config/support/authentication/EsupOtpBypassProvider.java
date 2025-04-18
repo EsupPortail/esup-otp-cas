@@ -5,14 +5,14 @@ import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.apereo.cas.authentication.Authentication;
+import org.apereo.cas.authentication.MultifactorAuthenticationFailureModeEvaluator;
 import org.apereo.cas.authentication.MultifactorAuthenticationProvider;
 import org.apereo.cas.authentication.bypass.BaseMultifactorAuthenticationProviderBypassEvaluator;
+import org.apereo.cas.configuration.model.support.mfa.BaseMultifactorAuthenticationProviderProperties.MultifactorAuthenticationProviderFailureModes;
 import org.apereo.cas.services.RegisteredService;
-import org.apereo.cas.web.support.WebUtils;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpMethod;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpService;
 import org.esupportail.cas.config.EsupOtpConfigurationProperties;
-import org.esupportail.cas.configuration.model.support.mfa.EsupOtpMultifactorProperties;
 import org.json.JSONObject;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +26,15 @@ public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProvider
     
     EsupOtpConfigurationProperties esupOtpConfigurationProperties;
     
+    MultifactorAuthenticationFailureModeEvaluator failureModeEvaluator;
+    
 	public EsupOtpBypassProvider(EsupOtpService esupOtpService,
-			EsupOtpConfigurationProperties esupOtpConfigurationProperties) {
+				     EsupOtpConfigurationProperties esupOtpConfigurationProperties,
+				     MultifactorAuthenticationFailureModeEvaluator failureModeEvaluator) {				     
 		super(EsupOtpMultifactorProperties.DEFAULT_IDENTIFIER);
 		this.esupOtpService = esupOtpService;
 		this.esupOtpConfigurationProperties = esupOtpConfigurationProperties;
+		this.failureModeEvaluator = failureModeEvaluator;
 	}
 
 	@Override
@@ -58,7 +62,8 @@ public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProvider
 				}
 		} catch (Exception e) {
 			log.error("Exception ...", e);
-			return false;
+			MultifactorAuthenticationProviderFailureModes failureMode = failureModeEvaluator.evaluate(registeredService, provider);
+			return !failureMode.isAllowedToBypass();
 		}
 		log.debug("no bypass");
 		return true;
