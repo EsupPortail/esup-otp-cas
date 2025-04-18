@@ -107,6 +107,8 @@
                       return submitWebauthnCodeRequest();
                   case 'push':
                       return submitPushCodeRequest();
+                  case 'passcode_grid':
+                      return submitPasscode_gridCodeRequest();
                   default:
                       return submitCodeRequest();
               }
@@ -128,7 +130,10 @@
                   failed: /*[[#{cas.mfa.esupotp.webauthn.failed}]]*/ "",
                   retry: /*[[#{cas.mfa.esupotp.webauthn.retry}]]*/ "",
                   canceled: /*[[#{cas.mfa.esupotp.webauthn.canceled}]]*/ "",
-              }
+              },
+              passcode_grid: {
+                  instructions: /*[[#{cas.mfa.esupotp.passcode_grid.instructions}]]*/ "",
+              },
           };
 
           activateWaitingFor();
@@ -178,6 +183,17 @@
                       console.log("Something is broken : " + data);
                   }
               });
+          }
+
+          async function submitPasscode_gridCodeRequest() {
+              const passcode_gridData = await (fetch(`${apiUrl}/users/${uid}/methods/passcode_grid/transports/passcode_grid/${userHash}`, {method: "POST"})
+                  .then(res => res.json())
+              );
+              const challenge = passcode_gridData.message.challenge;
+              const [line, column] = challenge;
+              const lineLabel = String.fromCharCode(line + 'A'.charCodeAt(0));
+              const columnLabel = column + 1;
+              setTransportStatus(`<label>${messages.passcode_grid.instructions.replace("%LINE%", lineLabel).replace("%COLUMN%", columnLabel)}</label>`);
           }
 
           function initializeSocket() {
