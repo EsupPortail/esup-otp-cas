@@ -31,7 +31,7 @@ public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProvider
 	public EsupOtpBypassProvider(EsupOtpService esupOtpService,
 				     EsupOtpConfigurationProperties esupOtpConfigurationProperties,
 				     MultifactorAuthenticationFailureModeEvaluator failureModeEvaluator) {				     
-		super(EsupOtpMultifactorProperties.DEFAULT_IDENTIFIER);
+		super(EsupOtpConfigurationProperties.DEFAULT_IDENTIFIER);
 		this.esupOtpService = esupOtpService;
 		this.esupOtpConfigurationProperties = esupOtpConfigurationProperties;
 		this.failureModeEvaluator = failureModeEvaluator;
