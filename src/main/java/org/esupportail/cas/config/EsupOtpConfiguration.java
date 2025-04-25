@@ -3,6 +3,7 @@ package org.esupportail.cas.config;
 import lombok.extern.slf4j.Slf4j;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.web.flow.CasWebflowConfigurer;
+import org.apereo.cas.web.flow.CasWebflowConstants;
 import org.apereo.cas.web.flow.CasWebflowExecutionPlanConfigurer;
 import org.apereo.cas.web.flow.configurer.AbstractCasWebflowConfigurer;
 import org.apereo.cas.web.flow.resolver.impl.CasWebflowEventResolutionConfigurationContext;
@@ -41,7 +42,7 @@ public class EsupOtpConfiguration {
 
 
 	@Autowired
-	@Qualifier("loginFlowRegistry")
+    @Qualifier(CasWebflowConstants.BEAN_NAME_FLOW_DEFINITION_REGISTRY)
 	private FlowDefinitionRegistry loginFlowDefinitionRegistry;
 
     @Autowired
