@@ -33,8 +33,7 @@ public class EsupOtpConfigurationProperties extends BaseMultifactorAuthenticatio
 	String apiPassword = "CAS";
 	
 	Boolean byPassIfNoEsupOtpMethodIsActive = true;
-	
-	Boolean trustedDeviceEnabled = true;
+
 
 	public EsupOtpConfigurationProperties() {
 		setId(DEFAULT_IDENTIFIER);
@@ -47,7 +46,6 @@ public class EsupOtpConfigurationProperties extends BaseMultifactorAuthenticatio
 		log.info("usersSecret : {}", usersSecret); 
 		log.info("apiPassword : {}", apiPassword);
 		log.info("byPassIfNoEsupOtpMethodIsActive : {}", byPassIfNoEsupOtpMethodIsActive);
-		log.info("trustedDeviceEnabled : {}", trustedDeviceEnabled);
 		log.info("failureMode : {}", getFailureMode());
 	}
 	
