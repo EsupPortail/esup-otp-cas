@@ -17,6 +17,7 @@ dependencies {
     implementation "org.apereo.cas:cas-server-core-util-api:${project.'cas.version'}"
     implementation "org.apereo.cas:cas-server-core-authentication-api:${project.'cas.version'}"
     implementation "org.apereo.cas:cas-server-core-authentication-mfa-api:${project.'cas.version'}"
+    implementation "org.apereo.cas:cas-server-core-cookie-api:${project.'cas.version'}"
     implementation "org.apereo.cas:cas-server-core-web-api:${project.'cas.version'}"
     implementation "org.apereo.cas:cas-server-core-webflow-api:${project.'cas.version'}"
     implementation "org.apereo.cas:cas-server-core-webflow-mfa-api:${project.'cas.version'}"

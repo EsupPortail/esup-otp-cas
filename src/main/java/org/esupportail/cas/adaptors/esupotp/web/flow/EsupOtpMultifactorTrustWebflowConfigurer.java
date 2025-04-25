@@ -6,7 +6,7 @@ import org.apereo.cas.trusted.util.MultifactorAuthenticationTrustUtils;
 import org.apereo.cas.trusted.web.flow.AbstractMultifactorTrustedDeviceWebflowConfigurer;
 import org.apereo.cas.trusted.web.flow.MultifactorAuthenticationTrustBean;
 import org.apereo.cas.web.flow.configurer.CasMultifactorWebflowCustomizer;
-import org.apereo.cas.web.support.WebUtils;
+import org.apereo.cas.web.support.CookieUtils;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
 import org.springframework.webflow.engine.Flow;
@@ -31,7 +31,7 @@ public class EsupOtpMultifactorTrustWebflowConfigurer extends AbstractMultifacto
                                                       final List<CasMultifactorWebflowCustomizer> mfaFlowCustomizers) {
         super(flowBuilderServices, loginFlowDefinitionRegistry, applicationContext, casProperties, Optional.of(flowDefinitionRegistry), mfaFlowCustomizers);
         this.flowDefinitionRegistry = flowDefinitionRegistry;
-        this.deviceRegistrationExpirationInSeconds = casProperties.getAuthn().getMfa().getTrusted().getDeviceFingerprint().getCookie().getMaxAge();
+        this.deviceRegistrationExpirationInSeconds = CookieUtils.getCookieMaxAge(casProperties.getAuthn().getMfa().getTrusted().getDeviceFingerprint().getCookie().getMaxAge());
     }
 
     @Override
