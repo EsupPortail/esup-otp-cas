@@ -20,11 +20,7 @@
               <div id="serviceui" class="mb-4">
                 <div class="d-flex align-items-center p-2">
                   <img src="images/webapp.png"><div id="servicedesc" class="ml-2">
-                    <h5 th:text="#{cas.login.pagetitle}">Login</h5>
-                    <h3 th:utext="#{cas.mfa.esupotp.waitingFor}" id="waiting" class="text-center d-none"></h3>
-                    <div id="displayTransport" class="btn btn-info" onClick="switchDiv();return false;">
-                      <span style="cursor:pointer;" th:utext="#{cas.mfa.esupotp.displayOtherMethod}" />
-                    </div>
+                    <h5 th:text="#{cas.mfa.esupotp.pagetitle}">Login</h5>
                   </div>
                 </div>
               </div>
@@ -63,8 +59,10 @@
 
               <div id="codeRequest" class="card-header text-center">
 
-                <div id="transportStatus"></div>
-
+		<section class="cas-field my-3">
+                  <div id="transportStatus" class="banner banner-danger"></div>
+		</section>
+		
                 <div class="form-wrapper">
                   <form method="post" id="fm2" class="fm-v clearfix">
                     <input type="hidden" name="_eventId" value="submitCallTransport" />
@@ -138,10 +136,9 @@
 
           activateWaitingFor();
 
-          // if waitingFor method is activated, waitingForDiv will appear else TransportDiv will appear
+          // if waitingFor method is activated, intitialize Socket
           function activateWaitingFor() {
               if (divNoCodeDisplay) {
-                  switchDiv();
                   initializeSocket();
               }
 
@@ -150,12 +147,6 @@
               } else if (pushAsked) {
                   submitPushCodeRequest();
               }
-          }
-
-          function switchDiv() {
-              $('#loginForm').toggleClass('d-none');
-              $('#waiting').toggleClass('d-none');
-              $('#codeRequest').toggleClass('d-none');
           }
 
           function submitCodeRequest() {
