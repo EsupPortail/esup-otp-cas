@@ -14,7 +14,6 @@ esupotp.usersSecret=changeit
 esupotp.apiPassword=changeit
 esupotp.byPassIfNoEsupOtpMethodIsActive=false
 esupotp.failureMode=CLOSED
-esupotp.trustedDeviceEnabled=true
 ```
 
 In cas.properties
