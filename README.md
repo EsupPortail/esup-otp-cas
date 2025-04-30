@@ -107,3 +107,11 @@ Note for authors : to publish on central maven repository, with JDK 21, and afte
 ```
 ./gradlew clean build publish
 ```
+
+
+## Screenshots
+
+![ESUP-OTP-CAS - Phone Authentication](src/etc/esup-otp-cas-1.png)
+
+![ESUP-OTP-CAS - Grid Authentication](src/etc/esup-otp-cas-2.png)
+
