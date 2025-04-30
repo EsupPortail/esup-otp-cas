@@ -21,20 +21,24 @@
                 <div class="d-flex align-items-center p-2">
                   <img src="images/webapp.png"><div id="servicedesc" class="ml-2">
                     <h2 th:text="#{cas.mfa.esupotp.pagetitle}">Login</h2>
-                  </div>
+                </div>
                 </div>
               </div>
             </div>
 
-	    <section class="cas-field my-3">
-              <div id="transportStatus" class="banner banner-warning"></div>
-	    </section>
-	    
+            <section class="cas-field my-3">
+                <div id="transportStatus" class="banner banner-warning"></div>
+            </section>
+
+            <div id="displayTransport" class="banner banner-info d-none" onClick="switchDiv();return false;">
+              <span style="cursor:pointer;" th:utext="#{cas.mfa.esupotp.displayAllMethods}" />
+            </div>
+
             <div id="loginForm" class="form-wrapper">
               <form method="post" id="fm1" th:object="${credential}" th:class="${displayInputCode ? '' : 'd-none' }">
                 <div id="msg" class="banner banner-danger alert alert-danger banner-dismissible mb-2" th:if="${#fields.hasErrors('*')}" role="alert">
-		  <h3 th:utext="#{cas.mfa.esupotp.webauthn.failed}">Authentication Failure</h3>
-		  <span th:utext="#{cas.mfa.esupotp.webauthn.retry}">Please try again</span>
+                  <h3 th:utext="#{cas.mfa.esupotp.webauthn.failed}">Authentication Failure</h3>
+                  <span th:utext="#{cas.mfa.esupotp.webauthn.retry}">Please try again</span>
                   <!-- p class="mdc-theme--error" th:each="err : ${#fields.errors('*')}" th:utext="${err}" /-->
                 </div>
                 <h3 class="text-center">
@@ -63,8 +67,8 @@
                 <input type="hidden" name="execution" th:value="${flowExecutionKey}" />
                 <input type="hidden" name="geolocation" />
               </form>
-		
-              <div id="codeRequest" class="card-header text-center m-2">		
+
+		  <div id="codeRequest" class="card-header text-center m-2">
                 <div class="form-wrapper">
                   <form method="post" id="fm2" class="fm-v clearfix">
                     <input type="hidden" name="_eventId" value="submitCallTransport" />
@@ -134,9 +138,9 @@
               passcode_grid: {
                   instructions: /*[[#{cas.mfa.esupotp.passcode_grid.instructions}]]*/ "",
               },
-	      pushcode: {
-		  waitingFor: /*[[#{cas.mfa.esupotp.waitingFor}]]*/ "",
-	      },
+              pushcode: {
+                  waitingFor: /*[[#{cas.mfa.esupotp.waitingFor}]]*/ "",
+              },
           };
 
           activateWaitingFor();
@@ -144,6 +148,7 @@
           // if waitingFor method is activated, intitialize Socket
           function activateWaitingFor() {
               if (divNoCodeDisplay) {
+                  switchDiv();
                   initializeSocket();
               }
 
@@ -152,6 +157,12 @@
               } else if (pushAsked) {
                   submitPushCodeRequest();
               }
+          }
+
+          function switchDiv() {
+              $('#loginForm').toggleClass('d-none');
+              $('#codeRequest').toggleClass('d-none');
+              $('#displayTransport').toggleClass('d-none');	      
           }
 
           function submitCodeRequest() {
@@ -171,7 +182,7 @@
           }
 
           function submitPushCodeRequest() {
-              setTransportStatus(`<label>${messages.pushcode.waitingFor}</label>`);	      
+              setTransportStatus(`<label>${messages.pushcode.waitingFor}</label>`);
               $.ajax({
                   type: 'POST',
                   url: apiUrl + '/users/' + uid + '/methods/push/transports/push/' + userHash
