@@ -25,10 +25,16 @@
                 </div>
               </div>
             </div>
+
+	    <section class="cas-field my-3">
+              <div id="transportStatus" class="banner banner-warning"></div>
+	    </section>
+	    
             <div id="loginForm" class="form-wrapper">
               <form method="post" id="fm1" th:object="${credential}" th:class="${displayInputCode ? '' : 'd-none' }">
-                <div id="msg" class="errors" th:if="${#fields.hasErrors('*')}">
-                  <span class="mdc-theme--error" th:each="err : ${#fields.errors('*')}" th:utext="${err}" />
+                <div id="msg" class="banner banner-danger alert alert-danger banner-dismissible mb-2" th:if="${#fields.hasErrors('*')}" role="alert">
+		  <h2 th:utext="#{screen.authentication.error.title}">Authentication Failure</h2>
+                  <p class="mdc-theme--error" th:each="err : ${#fields.errors('*')}" th:utext="${err}" />
                 </div>
                 <h3 class="text-center">
                   <i class="mdi mdi-security"></i>
@@ -56,13 +62,8 @@
                 <input type="hidden" name="execution" th:value="${flowExecutionKey}" />
                 <input type="hidden" name="geolocation" />
               </form>
-
-              <div id="codeRequest" class="card-header text-center">
-
-		<section class="cas-field my-3">
-                  <div id="transportStatus" class="banner banner-danger"></div>
-		</section>
 		
+              <div id="codeRequest" class="card-header text-center m-2">		
                 <div class="form-wrapper">
                   <form method="post" id="fm2" class="fm-v clearfix">
                     <input type="hidden" name="_eventId" value="submitCallTransport" />
