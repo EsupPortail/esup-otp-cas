@@ -33,8 +33,9 @@
             <div id="loginForm" class="form-wrapper">
               <form method="post" id="fm1" th:object="${credential}" th:class="${displayInputCode ? '' : 'd-none' }">
                 <div id="msg" class="banner banner-danger alert alert-danger banner-dismissible mb-2" th:if="${#fields.hasErrors('*')}" role="alert">
-		  <h2 th:utext="#{screen.authentication.error.title}">Authentication Failure</h2>
-                  <p class="mdc-theme--error" th:each="err : ${#fields.errors('*')}" th:utext="${err}" />
+		  <h3 th:utext="#{cas.mfa.esupotp.webauthn.failed}">Authentication Failure</h3>
+		  <span th:utext="#{cas.mfa.esupotp.webauthn.retry}">Please try again</span>
+                  <!-- p class="mdc-theme--error" th:each="err : ${#fields.errors('*')}" th:utext="${err}" /-->
                 </div>
                 <h3 class="text-center">
                   <i class="mdi mdi-security"></i>
