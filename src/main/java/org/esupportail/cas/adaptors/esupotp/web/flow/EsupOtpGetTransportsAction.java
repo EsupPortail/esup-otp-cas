@@ -62,6 +62,7 @@ public class EsupOtpGetTransportsAction extends AbstractMultifactorAuthenticatio
             JSONObject transports = (JSONObject) ((JSONObject) userInfos.get("user")).get("transports");
 
             Boolean defaultWaitingFor = false;
+            boolean displayInputCode = false;
             for (String method : methods.keySet()) {
                 if ("waitingFor".equals(method)) {
                     defaultWaitingFor = (Boolean) methods.get(method);
@@ -71,10 +72,16 @@ public class EsupOtpGetTransportsAction extends AbstractMultifactorAuthenticatio
                 } else {
                 	EsupOtpMethod m = new EsupOtpMethod(method, (JSONObject) methods.get(method));
                     listMethods.add(m);
-                    if("push".equals(m.getName()) && m.getActive()) {
-                    	pushAsked = true;
-                    } else if("webauthn".equals(m.getName()) && m.getActive()) {
-                    	webauthnAsked = true;
+                    if (m.getActive()) {
+                        if ("push".equals(m.getName())) {
+                            pushAsked = true;
+                        } else if ("webauthn".equals(m.getName())) {
+                            webauthnAsked = true;
+                        } else if ("esupnfc".equals(m.getName())) {
+                            // nothing
+                        } else {
+                            displayInputCode = true;
+                        }
                     }
                 }
             }
@@ -83,6 +90,7 @@ public class EsupOtpGetTransportsAction extends AbstractMultifactorAuthenticatio
             requestContext.getFlowScope().put("divNoCodeDisplay", defaultWaitingFor);
             requestContext.getFlowScope().put("pushAsked", pushAsked);
             requestContext.getFlowScope().put("webauthnAsked", webauthnAsked);
+            requestContext.getFlowScope().put("displayInputCode", displayInputCode);
             
             user = new EsupOtpUser(uid, userHash, listMethods, transports);
         } catch (JSONException e) {

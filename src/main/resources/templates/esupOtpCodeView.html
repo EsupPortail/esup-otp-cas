@@ -26,7 +26,7 @@
               </div>
             </div>
             <div id="loginForm" class="form-wrapper">
-              <form method="post" id="fm1" th:object="${credential}">
+              <form method="post" id="fm1" th:object="${credential}" th:class="${displayInputCode ? '' : 'd-none' }">
                 <div id="msg" class="errors" th:if="${#fields.hasErrors('*')}">
                   <span class="mdc-theme--error" th:each="err : ${#fields.errors('*')}" th:utext="${err}" />
                 </div>
