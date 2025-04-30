@@ -132,6 +132,9 @@
               passcode_grid: {
                   instructions: /*[[#{cas.mfa.esupotp.passcode_grid.instructions}]]*/ "",
               },
+	      pushcode: {
+		  waitingFor: /*[[#{cas.mfa.esupotp.waitingFor}]]*/ "",
+	      },
           };
 
           activateWaitingFor();
@@ -166,6 +169,7 @@
           }
 
           function submitPushCodeRequest() {
+              setTransportStatus(`<label>${messages.pushcode.waitingFor}</label>`);	      
               $.ajax({
                   type: 'POST',
                   url: apiUrl + '/users/' + uid + '/methods/push/transports/push/' + userHash
