@@ -1,13 +1,12 @@
 plugins {
     id 'java'
     id 'maven-publish'
-    id 'signing'
+    id 'org.jreleaser' version '1.18.0' 
 }
 
 repositories {
     mavenLocal()
     mavenCentral()
-    gradlePluginPortal()
 }
 
 dependencies {
@@ -64,26 +63,41 @@ publishing {
             }
         }
     }
+
     repositories {
         maven {
-            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            credentials(PasswordCredentials)
-            authentication {
-              basic(BasicAuthentication)
-            }
+            url = layout.buildDirectory.dir('staging-deploy')
         }
     }
 }
 
-tasks.withType(Sign).configureEach {
-    onlyIf("sign on maven central only to avoid sign on local and on jitpack") {
-        return gradle.taskGraph.hasTask(":publish");
+jreleaser {
+  project {
+     versionPattern = 'CUSTOM'
+  }
+  signing {
+    active = 'ALWAYS'
+    armored = true
+  }
+    release {
+        github {
+            skipRelease = true
+        }
     }
+  deploy {
+    maven {
+      mavenCentral {
+        'release-deploy' {
+          active = 'RELEASE'
+          url = 'https://central.sonatype.com/api/v1/publisher'
+          stagingRepository('build/staging-deploy')
+        }
+      }
+    }
+  }
 }
 
-signing {
-    useGpgCmd()
-    sign publishing.publications.maven
-}
+
+
+
+
