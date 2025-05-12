@@ -1,4 +1,4 @@
-Works on Apereo CAS V 7.2.1 - https://github.com/apereo/cas
+Works on Apereo CAS V 7.2.2 - https://github.com/apereo/cas
 
 ## Config
 
@@ -64,7 +64,7 @@ In cas/build.gradle
 
 dependencies {
     ...
-    implementation "org.esup-portail:esup-otp-cas:v1.2.5-cas_v7.2.x"
+    implementation "org.esup-portail:esup-otp-cas:v1.2.6-cas_v7.2.x"
 }
 ```
 
@@ -103,10 +103,22 @@ If you want to package locally, with JDK 21 :
 ./gradlew clean build
 ```
 
-Note for authors : to publish on central maven repository, with JDK 21, and after setting version on gradle.properties :
+## publishing on central maven repository
+
+This part is only for developers, if you want to publish on central maven repository, you need to have a sonatype account and be a member of the group org.esup-portail. 
+
+esup-otp-cas use jrelease plugin to publish on maven central repository.
+
+You have to configure also your ~/.jreleaser/config.yml file with your sonatype credentials.
+
+See https://jreleaser.org/guide/latest/examples/maven/maven-central.html#_gradle
+
+Next, to publish on central maven repository, with JDK 21, and after setting version on gradle.properties :
 ```
-./gradlew clean build publish
+./gradlew clean build publish jreleaserFullRelease
 ```
+
+
 
 
 ## Screenshots
