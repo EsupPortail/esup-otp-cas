@@ -58,7 +58,7 @@ public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProvider
 				}
 	
 				if (esupOtpConfigurationProperties.getByPassIfNoEsupOtpMethodIsActive() && esupOtpService.bypass(listMethods)) {
-					log.info(String.format("no method active for %s for service %s - mfa-esupotp bypass", uid, registeredService.getId()));
+                    log.info(String.format("no method active for %s for service %s - mfa-esupotp bypass", uid, registeredService != null ? registeredService.getId() : "null"));
 					return false;
 				}
 		} catch (Exception e) {
