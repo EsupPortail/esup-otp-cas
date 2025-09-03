@@ -20,7 +20,7 @@ In cas.properties
 
 ```
 # MFA Esup Otp Authentication
-cas.authn.mfa.globalProviderId=mfa-esupotp
+cas.authn.mfa.triggers.global.global-provider-id=mfa-esupotp
 
 # Add translations, you will need to check what are the default from CAS "Message Bundles" properties
 cas.messageBundle.baseNames=classpath:custom_messages,classpath:messages,classpath:esupotp_message
