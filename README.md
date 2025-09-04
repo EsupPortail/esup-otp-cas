@@ -2,21 +2,9 @@ Works on Apereo CAS V 7.2.2 - https://github.com/apereo/cas
 
 ## Config
 
-In esupotp.properties
+### cas.properties
 
-```
-##
-# Esup Otp Authentication
-#
-esupotp.rank=0
-esupotp.urlApi=http://my-api.com:8081
-esupotp.usersSecret=changeit
-esupotp.apiPassword=changeit
-esupotp.byPassIfNoEsupOtpMethodIsActive=false
-esupotp.failureMode=CLOSED
-```
-
-In cas.properties
+add the following:
 
 ```
 # MFA Esup Otp Authentication
@@ -35,6 +23,21 @@ cas.authn.mfa.trusted.core.auto-assign-device-name=true
 cas.authn.mfa.trusted.device-fingerprint.cookie.max-age=604800
 ```
 with auto-assign-device-name, user will not have to choose a name for his device in a web form, it will be automatically assigned.  
+
+### esupotp.properties
+
+Create esupotp.properties in same directory as cas.properties
+```
+##
+# Esup Otp Authentication
+#
+esupotp.rank=0
+esupotp.urlApi=http://my-api.com:8081
+esupotp.usersSecret=changeit
+esupotp.apiPassword=changeit
+esupotp.byPassIfNoEsupOtpMethodIsActive=false
+esupotp.failureMode=CLOSED
+```
 
 In esupotp.properties you can also use usual Multifactor Authentication Bypass configurations described here https://apereo.github.io/cas/6.3.x/mfa/Configuring-Multifactor-Authentication-Bypass.html
 
@@ -57,8 +60,9 @@ def boolean run(authentication, principal, registeredService, provider, logger, 
 }
 ```
 
-In cas/build.gradle
+### cas/build.gradle
 
+add
 ``` groovy
 ...
 
@@ -68,7 +72,9 @@ dependencies {
 }
 ```
 
-In log4j2.xml
+### log4j2.xml
+
+add
 ```
 <AsyncLogger name="org.esupportail.cas.adaptors.esupotp" level="debug" additivity="false" includeLocation="true">
     <AppenderRef ref="casConsole"/>
