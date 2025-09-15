@@ -18,17 +18,6 @@ public class EsupOtpCredential extends AbstractCredential {
 
     private String token;
 
-    private String transport;
-
-    private String method;
-
-    private String uid;
-
-    private String userHash;
-
-	/**
-     * Instantiates a new Esup otp token credential.
-     */
     public EsupOtpCredential() {
     }
 
@@ -46,57 +35,15 @@ public class EsupOtpCredential extends AbstractCredential {
         this.token = token;
     }
 
-    public String getTransport() {
-        return this.transport;
-    }
-
-    public void setTransport(final String transport) {
-        this.transport = transport;
-    }
-
-    public String getMethod() {
-        return this.method;
-    }
-
-    public void setMethod(final String method) {
-        this.method = method;
-    }
-
-    public String getUid() {
-        return this.uid;
-    }
-
-    public void setUid(final String uid) {
-        this.uid = uid;
-    }
-
-    public String getUserHash() {
-        return this.userHash;
-    }
-
-    public void setUserHash(final String userHash) {
-        this.userHash = userHash;
-    }
-
     @Override
     public String toString() {
-        return new ToStringBuilder(this)
-            .append("token", token)
-            .append("transport", transport)
-            .append("method", method)
-            .append("uid", uid)
-            .append("userHash", userHash)
-            .toString();
+        return token;
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
             .append(token)
-            .append(transport)
-            .append(method)
-            .append(uid)
-            .append(userHash)
             .toHashCode();
     }
 
@@ -111,10 +58,6 @@ public class EsupOtpCredential extends AbstractCredential {
         final EsupOtpCredential other = (EsupOtpCredential) obj;
         return new EqualsBuilder()
             .append(token, other.token)
-            .append(transport, other.transport)
-            .append(method, other.method)
-            .append(uid, other.uid)
-            .append(userHash, other.userHash)
             .isEquals();
     }
 
