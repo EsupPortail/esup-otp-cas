@@ -123,16 +123,5 @@ public class EsupOtpService {
 		String salt = uid + day + hour;
 		return salt;
 	}
-	
-    public Boolean bypass(List<EsupOtpMethod> methods) throws JSONException, IOException {
-        Boolean bypass = true;
-        for (EsupOtpMethod method : methods) {
-            if (method.getActive()) {
-                bypass = false;
-            }
-        }
-        return bypass;
-    }
-
 
 }
