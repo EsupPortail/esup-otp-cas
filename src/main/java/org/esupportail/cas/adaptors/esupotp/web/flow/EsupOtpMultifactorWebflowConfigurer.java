@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import lombok.val;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.web.flow.CasWebflowConstants;
 import org.apereo.cas.web.flow.configurer.AbstractCasMultifactorWebflowConfigurer;
@@ -66,17 +65,6 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
             createStateModelBinding(viewLoginFormState, CasWebflowConstants.VAR_ID_CREDENTIAL, EsupOtpCredential.class);
             createTransitionForState(viewLoginFormState, CasWebflowConstants.TRANSITION_ID_SUBMIT,
                 CasWebflowConstants.STATE_ID_REAL_SUBMIT, Map.of("bind", Boolean.TRUE, "validate", Boolean.TRUE));
-
-            createTransitionForState(viewLoginFormState, "submitCallTransport", "submitTransportEsupOtp");
-            ActionState submitTransportEsupOtpState = createActionState(flow, "submitTransportEsupOtp",
-                    createEvaluateAction("esupotpTransportService.sendCode(credential)"));
-
-            createTransitionForState(submitTransportEsupOtpState, CasWebflowConstants.TRANSITION_ID_SUCCESS, "successView");
-            
-            createTransitionForState(submitTransportEsupOtpState, CasWebflowConstants.TRANSITION_ID_ERROR, "errorView");
-            
-            createViewState(flow, "successView", "fragments/esupOtpSuccessView");
-            createViewState(flow, "errorView", "fragments/esupOtpErrorView");
 
             ActionState realSubmitState = createActionState(flow, CasWebflowConstants.STATE_ID_REAL_SUBMIT,
                 createEvaluateAction("esupotpAuthenticationWebflowAction"));
