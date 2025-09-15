@@ -21,6 +21,19 @@ public class EsupOtpCredential extends AbstractCredential {
     public EsupOtpCredential() {
     }
 
+    /*
+     * Beware of getId() / isValid():
+     * 
+     * https://github.com/apereo/cas/blob/master/core/cas-server-core-web-api/src/main/java/org/apereo/cas/web/support/WebUtils.java#L464 
+     * is called by EsupOtpAuthenticationWebflowEventResolver.resolveInternal via handleAuthenticationTransactionAndGrantTicketGrantingTicket and getCredentialFromContext
+     * => blank id is skipped
+     * => https://github.com/apereo/cas/blob/a20b68d4a507009b05cae35cb7059c51d6bfb6a6/core/cas-server-core-authentication-api/src/main/java/org/apereo/cas/authentication/DefaultAuthenticationTransactionManager.java#L35
+     *    has an empty list of credentials to check => CAS does not check OTP!
+     * 
+     * So isValid() must NOT return true if token is blank
+     * 
+     */
+    
     @Override
     public String getId() {
         return this.token;
