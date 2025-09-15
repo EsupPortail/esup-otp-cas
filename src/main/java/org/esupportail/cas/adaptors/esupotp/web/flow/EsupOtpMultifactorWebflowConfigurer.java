@@ -27,8 +27,8 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
 
     public static final String MFA_ESUPOTP_EVENT_ID = "mfa-esupotp";
     
-    static final String STATE_ID_TRANSPORT_FORM = "getTransportsForm";
-    
+    static final String STATE_ID_GET_INFOS = "getTransportsForm";
+    static final String STATE_ID_ASK_CODE_VIEW = "submitCodeFormView";
 
     public EsupOtpMultifactorWebflowConfigurer(final FlowBuilderServices flowBuilderServices,
                                                            final FlowDefinitionRegistry loginFlowDefinitionRegistry,
@@ -46,30 +46,38 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
     		
             Flow flow = getFlow(registry, MFA_ESUPOTP_EVENT_ID);
             
-            createFlowVariable(flow, CasWebflowConstants.VAR_ID_CREDENTIAL, EsupOtpCredential.class);
+            // to store errors & token
+            createFlowVariable(flow, CasWebflowConstants.VAR_ID_CREDENTIAL/*"credential"*/, EsupOtpCredential.class);
             
+            // call CAS "initialFlowSetupAction" to init various things
             flow.getStartActionList().add(createEvaluateAction(CasWebflowConstants.ACTION_ID_INITIAL_FLOW_SETUP));
 
+            // state #1: start with CAS "initializeLoginForm"
             ActionState initLoginFormState = createActionState(flow, CasWebflowConstants.STATE_ID_INIT_LOGIN_FORM,
-                createEvaluateAction(CasWebflowConstants.ACTION_ID_INIT_LOGIN_ACTION));
-            createTransitionForState(initLoginFormState, CasWebflowConstants.TRANSITION_ID_SUCCESS, STATE_ID_TRANSPORT_FORM);
-            
+                createEvaluateAction(CasWebflowConstants.ACTION_ID_INIT_LOGIN_ACTION)); // action triggers "success" event
+            createTransitionForState(initLoginFormState, CasWebflowConstants.TRANSITION_ID_SUCCESS, STATE_ID_GET_INFOS);
             setStartState(flow, initLoginFormState);
             createEndState(flow, CasWebflowConstants.STATE_ID_SUCCESS);
 
-            ActionState transportForm = createActionState(flow, STATE_ID_TRANSPORT_FORM,
-                createEvaluateAction("esupotpGetTransportsAction"));
-            createTransitionForState(transportForm, CasWebflowConstants.TRANSITION_ID_SUCCESS, "submitCodeFormView");
+            // state #2: get various vars in flow scope
+            ActionState transportForm = createActionState(flow, STATE_ID_GET_INFOS,
+                createEvaluateAction("esupotpGetTransportsAction")); // mettre dans le flow les params de la vue "esupOtpCodeView" en cas d'evt "authWithCode"
+            createTransitionForState(transportForm, CasWebflowConstants.TRANSITION_ID_SUCCESS, STATE_ID_ASK_CODE_VIEW);
 
-            ViewState viewLoginFormState = createViewState(flow, "submitCodeFormView", "esupOtpCodeView");
-            createStateModelBinding(viewLoginFormState, CasWebflowConstants.VAR_ID_CREDENTIAL, EsupOtpCredential.class);
+            // state #3: prompt OTP (using JS to trigger methods)
+            ViewState viewLoginFormState = createViewState(flow, STATE_ID_ASK_CODE_VIEW, "esupOtpCodeView");
+            // give access to flow variable "credential" in esupOtpCodeView.html (to store errors & token)
+            createStateModelBinding(viewLoginFormState, CasWebflowConstants.VAR_ID_CREDENTIAL/*"credential"*/, EsupOtpCredential.class);
             createTransitionForState(viewLoginFormState, CasWebflowConstants.TRANSITION_ID_SUBMIT,
                 CasWebflowConstants.STATE_ID_REAL_SUBMIT, Map.of("bind", Boolean.TRUE, "validate", Boolean.TRUE));
 
+            // state #4: verify OTP
             ActionState realSubmitState = createActionState(flow, CasWebflowConstants.STATE_ID_REAL_SUBMIT,
                 createEvaluateAction("esupotpAuthenticationWebflowAction"));
+
             createTransitionForState(realSubmitState, CasWebflowConstants.TRANSITION_ID_SUCCESS, CasWebflowConstants.STATE_ID_SUCCESS);
-            createTransitionForState(realSubmitState, CasWebflowConstants.TRANSITION_ID_ERROR, CasWebflowConstants.STATE_ID_INIT_LOGIN_FORM);
+            createTransitionForState(realSubmitState, CasWebflowConstants.TRANSITION_ID_ERROR, CasWebflowConstants.STATE_ID_INIT_LOGIN_FORM); // go back to state #1
+
         });        
     	registerMultifactorProviderAuthenticationWebflow(getLoginFlow(), MFA_ESUPOTP_EVENT_ID);
     }
