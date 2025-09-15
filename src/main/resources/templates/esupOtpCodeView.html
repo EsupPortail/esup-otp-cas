@@ -29,8 +29,8 @@
             <div id="loginForm" class="form-wrapper">
               <form method="post" id="fm1" th:object="${credential}">
                 <div id="errors" class="banner banner-danger alert alert-danger banner-dismissible mb-2" th:if="${#fields.hasErrors('*')}" role="alert">
-                  <h3 th:utext="#{cas.mfa.esupotp.webauthn.failed}">Authentication Failure</h3>
-                  <span th:utext="#{cas.mfa.esupotp.webauthn.retry}">Please try again</span>
+                  <h3 th:utext="#{cas.mfa.esupotp.failed}">Authentication Failure</h3>
+                  <span th:utext="#{cas.mfa.esupotp.retry}">Please try again</span>
                 </div>
                 <input type="hidden" name="_eventId_submit" value="Login" />
                 <input type="hidden" name="execution" th:value="${flowExecutionKey}" />
