@@ -10,7 +10,6 @@ import org.apereo.cas.authentication.MultifactorAuthenticationProvider;
 import org.apereo.cas.authentication.bypass.BaseMultifactorAuthenticationProviderBypassEvaluator;
 import org.apereo.cas.configuration.model.support.mfa.BaseMultifactorAuthenticationProviderProperties.MultifactorAuthenticationProviderFailureModes;
 import org.apereo.cas.services.RegisteredService;
-import org.esupportail.cas.adaptors.esupotp.EsupOtpMethod;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpService;
 import org.esupportail.cas.config.EsupOtpConfigurationProperties;
 import org.json.JSONObject;
@@ -50,17 +49,18 @@ public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProvider
 				final String uid = authentication.getPrincipal().getId();
 	
 				JSONObject userInfos = esupOtpService.getUserInfos(uid);
-				List<EsupOtpMethod> listMethods = new ArrayList<EsupOtpMethod>();
+				JSONObject methods = userInfos.getJSONObject("user").getJSONObject("methods");
 	
-				JSONObject methods = (JSONObject) ((JSONObject) userInfos.get("user")).get("methods");
-	
+				String activeMethod = null;
 				for (String method : methods.keySet()) {
-					if (!"waitingFor".equals(method) && !"codeRequired".equals(method)) {
-						listMethods.add(new EsupOtpMethod(method, (JSONObject) methods.get(method)));
+					if (methods.get(method) instanceof JSONObject obj) {
+					    if (obj.getBoolean("active")) {
+						    activeMethod = method;
+					    }
 					}
 				}
 	
-				if (esupOtpService.bypass(listMethods)) {
+				if (activeMethod == null) {
                     log.info(String.format("no method active for %s for service %s - mfa-esupotp bypass", uid, registeredService != null ? registeredService.getId() : "null"));
 					return false;
 				}
