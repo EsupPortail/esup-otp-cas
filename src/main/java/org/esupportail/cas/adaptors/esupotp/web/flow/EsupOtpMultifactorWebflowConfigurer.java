@@ -63,7 +63,7 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
 
             ActionState transportForm = createActionState(flow, STATE_ID_TRANSPORT_FORM,
                 createEvaluateAction("esupotpGetTransportsAction"));
-            createTransitionForState(transportForm, "authWithCode", "submitCodeFormView");
+            createTransitionForState(transportForm, CasWebflowConstants.TRANSITION_ID_SUCCESS, "submitCodeFormView");
 
             List<String> propertiesToBind = CollectionUtils.wrapList("token", "transport", "method", "uid", "userHash");
             BinderConfiguration binder = createStateBinderConfiguration(propertiesToBind);
