@@ -9,15 +9,12 @@ import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.web.flow.CasWebflowConstants;
 import org.apereo.cas.web.flow.configurer.AbstractCasMultifactorWebflowConfigurer;
 import org.apereo.cas.web.flow.configurer.CasMultifactorWebflowCustomizer;
-import org.apereo.cas.util.CollectionUtils;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpCredential;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.webflow.action.SetAction;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
 import org.springframework.webflow.engine.ActionState;
 import org.springframework.webflow.engine.Flow;
 import org.springframework.webflow.engine.ViewState;
-import org.springframework.webflow.engine.builder.BinderConfiguration;
 import org.springframework.webflow.engine.builder.support.FlowBuilderServices;
 
 
@@ -65,15 +62,8 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
                 createEvaluateAction("esupotpGetTransportsAction"));
             createTransitionForState(transportForm, CasWebflowConstants.TRANSITION_ID_SUCCESS, "submitCodeFormView");
 
-            List<String> propertiesToBind = CollectionUtils.wrapList("token", "transport", "method", "uid", "userHash");
-            BinderConfiguration binder = createStateBinderConfiguration(propertiesToBind);
-            ViewState viewLoginFormState = createViewState(flow, "submitCodeFormView",
-            		"esupOtpCodeView", binder);
+            ViewState viewLoginFormState = createViewState(flow, "submitCodeFormView", "esupOtpCodeView");
             createStateModelBinding(viewLoginFormState, CasWebflowConstants.VAR_ID_CREDENTIAL, EsupOtpCredential.class);
-
-            SetAction setPrincipalAction = createSetAction("viewScope.principal", "conversationScope.authentication.principal");
-            viewLoginFormState.getEntryActionList().add(setPrincipalAction);
-
             createTransitionForState(viewLoginFormState, CasWebflowConstants.TRANSITION_ID_SUBMIT,
                 CasWebflowConstants.STATE_ID_REAL_SUBMIT, Map.of("bind", Boolean.TRUE, "validate", Boolean.TRUE));
 
