@@ -102,6 +102,6 @@ public class EsupOtpGetTransportsAction extends AbstractMultifactorAuthenticatio
         requestContext.getFlowScope().put("listTransports", listTransports);
         requestContext.getFlowScope().put("user", user);
 
-        return new EventFactorySupport().event(this, "authWithCode");
+        return success();
     }
 }
