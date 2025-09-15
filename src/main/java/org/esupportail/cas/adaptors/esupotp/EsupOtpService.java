@@ -53,39 +53,6 @@ public class EsupOtpService {
 		return new JSONObject(response.toString());
 	}
 
-	public List<Map<String, String>> getTransports(List<EsupOtpMethod> methods) {
-		List<Map<String, String>> transports = new ArrayList<>();
-		//Map<Integer, Map> transports = new HashMap<>();
-		Map <String, String> transport;
-
-		for (EsupOtpMethod method : methods) {
-			if (method.getActive()) {
-				if (method.getTransports().isEmpty()) {
-					switch (method.getName()) {
-					case "webauthn":
-					case "passcode_grid":
-					case "esupnfc":
-						method.getTransports().add(method.getName());
-						break;
-					default:
-						break;
-					}
-				}
-				if (method.getTransports().size() > 0) {
-					for(String transportName : method.getTransports() ){
-						transport = new HashMap<>();
-						transport.put("method", method.getName());
-						transport.put("transport", transportName);
-						transports.add(transport);
-					}
-				}
-			}
-		}
-		log.info("Size [{}] [{}]",  + transports.size(), transports.toString());
-
-		return transports;
-	}
-
 	public JSONObject getUserInfos(String uid) throws IOException, NoSuchAlgorithmException {
 		String url = esupOtpConfigurationProperties.getUrlApi() + "/users/" + uid + "/" + getUserHash(uid);
 		URL obj = new URL(url);
