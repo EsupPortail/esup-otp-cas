@@ -26,11 +26,11 @@ public class EsupOtpConfigurationProperties extends BaseMultifactorAuthenticatio
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
-	String urlApi = "CAS";
+	String urlApi;
 	
-	String usersSecret = "CAS";
+	String usersSecret;
 	
-	String apiPassword = "CAS";
+	String apiPassword;
 
 	String otpManagerUrl;
 	
@@ -43,6 +43,9 @@ public class EsupOtpConfigurationProperties extends BaseMultifactorAuthenticatio
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		if (urlApi == null) throw new IllegalStateException("The [esupotp.urlApi] property must be set in esup.properties.");
+		if (usersSecret == null) throw new IllegalStateException("The [esupotp.usersSecret] property must be set in esup.properties.");
+		if (apiPassword == null) throw new IllegalStateException("The [esupotp.apiPassword] property must be set in esup.properties.");
 		if (otpManagerUrl == null) throw new IllegalStateException("The [esupotp.otpManagerUrl] property must be set in esup.properties.");
 		log.info("rank : {}", this.getRank());
 		log.info("urlApi : {}", urlApi); 
