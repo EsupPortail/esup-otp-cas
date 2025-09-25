@@ -49,18 +49,8 @@ public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProvider
 				final String uid = authentication.getPrincipal().getId();
 	
 				JSONObject userInfos = esupOtpService.getUserInfos(uid);
-				JSONObject methods = userInfos.getJSONObject("user").getJSONObject("methods");
 	
-				String activeMethod = null;
-				for (String method : methods.keySet()) {
-					if (methods.get(method) instanceof JSONObject obj) {
-					    if (obj.optBoolean("active", false)) {
-						    activeMethod = method;
-					    }
-					}
-				}
-	
-				if (activeMethod == null) {
+				if (!userInfos.getJSONObject("user").getBoolean("has_enabled_method")) {
                     log.info(String.format("no method active for %s for service %s - mfa-esupotp bypass", uid, registeredService != null ? registeredService.getId() : "null"));
 					return false;
 				}
