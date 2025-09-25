@@ -54,7 +54,7 @@ public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProvider
 				String activeMethod = null;
 				for (String method : methods.keySet()) {
 					if (methods.get(method) instanceof JSONObject obj) {
-					    if (obj.getBoolean("active")) {
+					    if (obj.optBoolean("active", false)) {
 						    activeMethod = method;
 					    }
 					}
