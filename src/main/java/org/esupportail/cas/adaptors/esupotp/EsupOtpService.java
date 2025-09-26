@@ -64,6 +64,7 @@ public class EsupOtpService {
 					switch (method.getName()) {
 					case "webauthn":
 					case "passcode_grid":
+					case "esupnfc":
 						method.getTransports().add(method.getName());
 						break;
 					default:

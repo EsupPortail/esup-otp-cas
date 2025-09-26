@@ -1,26 +1,14 @@
-Works on Apereo CAS V 7.1.6 - https://github.com/apereo/cas
+Works on Apereo CAS V 7.1.6.1 - https://github.com/apereo/cas
 
 ## Config
 
-In esupotp.properties
+### cas.properties
 
-```
-##
-# Esup Otp Authentication
-#
-esupotp.rank=0
-esupotp.urlApi=http://my-api.com:8081
-esupotp.usersSecret=changeit
-esupotp.apiPassword=changeit
-esupotp.byPassIfNoEsupOtpMethodIsActive=false
-esupotp.failureMode=CLOSED
-```
-
-In cas.properties
+add the following:
 
 ```
 # MFA Esup Otp Authentication
-cas.authn.mfa.globalProviderId=mfa-esupotp
+cas.authn.mfa.triggers.global.global-provider-id=mfa-esupotp
 
 # Add translations, you will need to check what are the default from CAS "Message Bundles" properties
 cas.messageBundle.baseNames=classpath:custom_messages,classpath:messages,classpath:esupotp_message
@@ -35,6 +23,21 @@ cas.authn.mfa.trusted.core.auto-assign-device-name=true
 cas.authn.mfa.trusted.device-fingerprint.cookie.max-age=604800
 ```
 with auto-assign-device-name, user will not have to choose a name for his device in a web form, it will be automatically assigned.  
+
+### esupotp.properties
+
+Create esupotp.properties in same directory as cas.properties
+```
+##
+# Esup Otp Authentication
+#
+esupotp.rank=0
+esupotp.urlApi=http://my-api.com:8081
+esupotp.usersSecret=changeit
+esupotp.apiPassword=changeit
+esupotp.byPassIfNoEsupOtpMethodIsActive=false
+esupotp.failureMode=CLOSED
+```
 
 In esupotp.properties you can also use usual Multifactor Authentication Bypass configurations described here https://apereo.github.io/cas/6.3.x/mfa/Configuring-Multifactor-Authentication-Bypass.html
 
@@ -57,18 +60,21 @@ def boolean run(authentication, principal, registeredService, provider, logger, 
 }
 ```
 
-In cas/build.gradle
+### cas/build.gradle
 
+add
 ``` groovy
 ...
 
 dependencies {
     ...
-    implementation "org.esup-portail:esup-otp-cas:v1.2.5-cas_v7.1.x"
+    implementation "org.esup-portail:esup-otp-cas:v1.2.7-cas_v7.1.x"
 }
 ```
 
-In log4j2.xml
+### log4j2.xml
+
+add
 ```
 <AsyncLogger name="org.esupportail.cas.adaptors.esupotp" level="debug" additivity="false" includeLocation="true">
     <AppenderRef ref="casConsole"/>
@@ -103,7 +109,27 @@ If you want to package locally, with JDK 21 :
 ./gradlew clean build
 ```
 
-Note for authors : to publish on central maven repository, with JDK 21, and after setting version on gradle.properties :
+## publishing on central maven repository
+
+This part is only for developers, if you want to publish on central maven repository, you need to have a sonatype account and be a member of the group org.esup-portail. 
+
+esup-otp-cas use jrelease plugin to publish on maven central repository.
+
+You have to configure also your ~/.jreleaser/config.yml file with your sonatype credentials.
+
+See https://jreleaser.org/guide/latest/examples/maven/maven-central.html#_gradle
+
+Next, to publish on central maven repository, with JDK 21, and after setting version on gradle.properties :
 ```
-./gradlew clean build publish
+./gradlew clean build publish jreleaserFullRelease
 ```
+
+
+
+
+## Screenshots
+
+![ESUP-OTP-CAS - Phone Authentication](src/etc/esup-otp-cas-1.png)
+
+![ESUP-OTP-CAS - Grid Authentication](src/etc/esup-otp-cas-2.png)
+

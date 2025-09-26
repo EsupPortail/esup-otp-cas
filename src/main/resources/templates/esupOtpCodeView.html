@@ -8,6 +8,15 @@
 
   <title th:utext="#{cas.mfa.esupotp.pagetitle}">CAS MFA ESUP-OTP</title>
   <link href="../../static/css/cas.css" rel="stylesheet" th:remove="tag" />
+  <style>
+    .inline-block {
+      display: inline-block; 
+    }
+    .esupnfc_qrcode {
+      max-width: 10em;
+      height: auto;
+    }
+  </style>
 </head>
 
 <body>
@@ -113,6 +122,8 @@
                       return submitPushCodeRequest();
                   case 'passcode_grid':
                       return submitPasscode_gridCodeRequest();
+                  case 'esupnfc':
+                      return submitEsupnfcCodeRequest();
                   default:
                       return submitCodeRequest();
               }
@@ -137,6 +148,9 @@
               },
               passcode_grid: {
                   instructions: /*[[#{cas.mfa.esupotp.passcode_grid.instructions}]]*/ "",
+              },
+              esupnfc: {
+                  instructions: /*[[#{cas.mfa.esupotp.esupnfc.instructions}]]*/ "",
               },
               pushcode: {
                   waitingFor: /*[[#{cas.mfa.esupotp.waitingFor}]]*/ "",
@@ -202,6 +216,23 @@
               const lineLabel = String.fromCharCode(line + 'A'.charCodeAt(0));
               const columnLabel = column + 1;
               setTransportStatus(`<label>${messages.passcode_grid.instructions.replace("%LINE%", lineLabel).replace("%COLUMN%", columnLabel)}</label>`);
+          }
+
+          async function submitEsupnfcCodeRequest() {
+              const { server_infos, code } = await (fetch(`${apiUrl}/esupnfc/infos?requireQrCode=true`, { method: "GET" })
+                      .then(res => res.json()));
+              
+              if(code === "Ok") {
+                  setTransportStatus(`<label>${messages.esupnfc.instructions
+                      .replace("%ANDROID_APP_URL%", 'https://play.google.com/store/apps/details?id=org.esupportail.esupAuth')
+                      .replace("%IOS_APP_URL%", 'https://apps.apple.com/fr/app/esup-auth/id1563904941')
+                      .replace("%QRCODE%", server_infos.qrCode)
+                      .replace("%ETABLISSEMENT%", server_infos.etablissement)
+                      .replace("%API_URL%", apiUrl)
+                  }</label>`);
+              } else {
+                  setTransportStatus("<label>S'authentifier avec sa carte multi-service sur un Smartphone compatible NFC</label>");
+              }
           }
 
           function initializeSocket() {

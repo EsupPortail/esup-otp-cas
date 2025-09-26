@@ -42,6 +42,9 @@ public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProvider
 	public boolean shouldMultifactorAuthenticationProviderExecuteInternal(Authentication authentication,
 			RegisteredService registeredService, MultifactorAuthenticationProvider provider,
 			HttpServletRequest request) {
+		if (!esupOtpConfigurationProperties.getByPassIfNoEsupOtpMethodIsActive()) {
+		    return true;
+		}
 		try {					
 			log.debug("mfa-esupotp bypass evaluation ...");		
 				final String uid = authentication.getPrincipal().getId();
@@ -57,8 +60,8 @@ public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProvider
 					}
 				}
 	
-				if (esupOtpConfigurationProperties.getByPassIfNoEsupOtpMethodIsActive() && esupOtpService.bypass(listMethods)) {
-					log.info(String.format("no method active for %s for service %s - mfa-esupotp bypass", uid, registeredService.getId()));
+				if (esupOtpService.bypass(listMethods)) {
+                    log.info(String.format("no method active for %s for service %s - mfa-esupotp bypass", uid, registeredService != null ? registeredService.getId() : "null"));
 					return false;
 				}
 		} catch (Exception e) {

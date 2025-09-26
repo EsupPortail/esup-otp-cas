@@ -12,7 +12,6 @@ import org.esupportail.cas.adaptors.esupotp.web.flow.*;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -41,7 +40,7 @@ public class EsupOtpConfiguration {
 
 
 	@Autowired
-	@Qualifier("loginFlowRegistry")
+    @Qualifier("loginFlowRegistry")
 	private FlowDefinitionRegistry loginFlowDefinitionRegistry;
 
     @Autowired
