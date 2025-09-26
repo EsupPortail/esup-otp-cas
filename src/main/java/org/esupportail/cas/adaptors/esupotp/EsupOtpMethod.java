@@ -46,7 +46,7 @@ public class EsupOtpMethod implements Serializable{
     		this.active =  (Boolean)methodJson.get("active");
     		this.transports = toStringList((JSONArray)methodJson.get("transports"));
     	}catch(JSONException e){
-    		log.error("Error retrieving active and/or transports on JSON " + methodJson, e);
+    		log.error("Error retrieving active and/or transports on JSON for " + name + " : " + methodJson, e);
     	}
     }
     
