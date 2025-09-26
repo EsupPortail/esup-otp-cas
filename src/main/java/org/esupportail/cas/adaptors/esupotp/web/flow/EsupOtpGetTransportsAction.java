@@ -94,7 +94,7 @@ public class EsupOtpGetTransportsAction extends AbstractMultifactorAuthenticatio
             
             user = new EsupOtpUser(uid, userHash, listMethods, transports);
         } catch (JSONException e) {
-            throw new RuntimeException("Error retrieving methods and/or transports on JSON " + userInfos, e);
+            log.error("Error retrieving methods and/or transports on JSON " + userInfos, e);
         }
         List<Map<String, String>> listTransports = esupOtpService.getTransports(listMethods);
 

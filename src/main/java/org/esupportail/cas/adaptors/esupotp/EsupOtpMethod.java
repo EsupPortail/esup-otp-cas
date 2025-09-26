@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.json.*;
 
 /**
@@ -12,6 +13,7 @@ import org.json.*;
  * @author Alex Bouskine
  * @since 5.0.0
  */
+@Slf4j
 public class EsupOtpMethod implements Serializable{
 	private static final long serialVersionUID = -8908901132111037L;
     
@@ -44,7 +46,7 @@ public class EsupOtpMethod implements Serializable{
     		this.active =  (Boolean)methodJson.get("active");
     		this.transports = toStringList((JSONArray)methodJson.get("transports"));
     	}catch(JSONException e){
-    		throw new RuntimeException("Error retrieving active and/or transports on JSON " + methodJson, e);
+    		log.error("Error retrieving active and/or transports on JSON " + methodJson, e);
     	}
     }
     
