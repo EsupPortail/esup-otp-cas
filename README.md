@@ -1,4 +1,4 @@
-Works on Apereo CAS V 7.2.2 - https://github.com/apereo/cas
+Works on Apereo CAS V 7.2.6 - https://github.com/apereo/cas
 
 ## Config
 
