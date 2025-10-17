@@ -1,16 +1,11 @@
 package org.esupportail.cas.config.support.authentication;
 
-import org.apereo.cas.authentication.AuthenticationEventExecutionPlanConfigurer;
-import org.apereo.cas.authentication.AuthenticationHandler;
-import org.apereo.cas.authentication.AuthenticationMetaDataPopulator;
-import org.apereo.cas.authentication.MultifactorAuthenticationFailureModeEvaluator;
-import org.apereo.cas.authentication.MultifactorAuthenticationProvider;
+import org.apereo.cas.authentication.*;
 import org.apereo.cas.authentication.bypass.MultifactorAuthenticationProviderBypassEvaluator;
 import org.apereo.cas.authentication.metadata.AuthenticationContextAttributeMetaDataPopulator;
 import org.apereo.cas.authentication.principal.DefaultPrincipalFactory;
 import org.apereo.cas.authentication.principal.PrincipalFactory;
 import org.apereo.cas.configuration.CasConfigurationProperties;
-import org.apereo.cas.services.ServicesManager;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpAuthenticationHandler;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpMultifactorAuthenticationProvider;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpService;
@@ -36,10 +31,6 @@ public class EsupOtpAuthenticationEventExecutionPlanConfiguration {
 
     @Autowired
     private CasConfigurationProperties casProperties;
-
-    @Autowired
-    @Qualifier("servicesManager")
-    private ServicesManager servicesManager;
     
     @Autowired
     private EsupOtpConfigurationProperties esupOtpConfigurationProperties;
@@ -57,8 +48,7 @@ public class EsupOtpAuthenticationEventExecutionPlanConfiguration {
     @RefreshScope
     public AuthenticationHandler esupotpAuthenticationHandler() {
         return new EsupOtpAuthenticationHandler(
-        	esupOtpConfigurationProperties.getName(), 
-        	servicesManager, 
+        	esupOtpConfigurationProperties.getName(),
         	esupotpPrincipalFactory(),
         	esupOtpConfigurationProperties,
         	esupOtpService()

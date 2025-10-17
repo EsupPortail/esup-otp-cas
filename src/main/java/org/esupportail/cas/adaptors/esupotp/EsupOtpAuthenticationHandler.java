@@ -37,8 +37,8 @@ public class EsupOtpAuthenticationHandler extends AbstractPreAndPostProcessingAu
 	/**
 	 * Instantiates a new Esup otp authentication handler.
 	 */
-    public EsupOtpAuthenticationHandler(final String name, final ServicesManager servicesManager, final PrincipalFactory principalFactory, final EsupOtpConfigurationProperties esupOtpConfigurationProperties, EsupOtpService esupOtpService) {
-    	super(name, servicesManager, principalFactory, esupOtpConfigurationProperties.getRank());
+    public EsupOtpAuthenticationHandler(final String name, final PrincipalFactory principalFactory, final EsupOtpConfigurationProperties esupOtpConfigurationProperties, EsupOtpService esupOtpService) {
+    	super(name, principalFactory, esupOtpConfigurationProperties.getRank());
     	this.esupOtpConfigurationProperties = esupOtpConfigurationProperties;
     	this.esupOtpService = esupOtpService;
     }

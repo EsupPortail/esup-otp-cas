@@ -1,4 +1,4 @@
-Works on Apereo CAS V 7.2.6 - https://github.com/apereo/cas
+Works on Apereo CAS V 7.3.0 - https://github.com/apereo/cas
 
 ## Config
 
@@ -69,7 +69,7 @@ add
 
 dependencies {
     ...
-    implementation "org.esup-portail:esup-otp-cas:v1.2.7-cas_v7.2.x"
+    implementation "org.esup-portail:esup-otp-cas:v1.2.8-cas_v7.3.x"
 }
 ```
 
