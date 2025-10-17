@@ -35,7 +35,6 @@ esupotp.rank=0
 esupotp.urlApi=http://my-api.com:8081
 esupotp.usersSecret=changeit
 esupotp.apiPassword=changeit
-esupotp.apiPassword=changeit
 esupotp.byPassIfNoEsupOtpMethodIsActive=false
 esupotp.otpManagerUrl=https://esup-otp-manager.univ.fr/
 esupotp.failureMode=CLOSED
