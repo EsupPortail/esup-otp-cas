@@ -35,6 +35,7 @@ esupotp.rank=0
 esupotp.urlApi=http://my-api.com:8081
 esupotp.usersSecret=changeit
 esupotp.apiPassword=changeit
+esupotp.apiPassword=changeit
 esupotp.byPassIfNoEsupOtpMethodIsActive=false
 esupotp.otpManagerUrl=https://esup-otp-manager.univ.fr/
 esupotp.failureMode=CLOSED
@@ -69,7 +70,7 @@ add
 
 dependencies {
     ...
-    implementation "org.esup-portail:esup-otp-cas:v1.2.8-cas_v7.3.x"
+    implementation "org.esup-portail:esup-otp-cas:v2.1.0-cas_v7.3.x"
 }
 ```
 
