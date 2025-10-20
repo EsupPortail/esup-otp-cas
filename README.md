@@ -1,5 +1,7 @@
 Works on Apereo CAS V 7.3.0 - https://github.com/apereo/cas
 
+Require [esup-otp-api](https://github.com/EsupPortail/esup-otp-api/) $\ge$ v2.1.0
+
 ## Config
 
 ### cas.properties
