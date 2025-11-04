@@ -39,9 +39,7 @@
             </div>
           </div>
         </section>
-        <script th:src="${apiUrl} + '/js/socket.io.js'"></script>
-        <script th:src="${apiUrl} + '/public/login.js'"></script>
-        <script th:inline="javascript">
+        <script type="module" th:inline="javascript">
 
           // (ugly) syntax explained here: https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#javascript-natural-templates
           var apiUrl = /*[[${apiUrl}]]*/ "";
@@ -49,7 +47,13 @@
           var userHash = /*[[${userHash}]]*/ "";
           var otpManagerUrl = /*[[${otpManagerUrl}]]*/ "";
           
-          getUserOtpMethods_and_displayChoices({ apiUrl, uid, userHash, otpManagerUrl });
+          import * as login_js from /*[[${apiUrl + "/public/login.js?v=1"}]]*/ "";
+
+          if (!login_js.getUserOtpMethods_and_displayChoices) {
+            // the login.js has no export (ie prior to migration to module). It is a fatal error:
+            alert('FATAL ERROR: you must upgrade esup-otp-api (or downgrade esup-otp-cas / esup-otp-cas-server / esup-otp-shibboleth)')
+          }
+          login_js.getUserOtpMethods_and_displayChoices({ apiUrl, uid, userHash, otpManagerUrl });
         </script>
       </div>
     </div>
