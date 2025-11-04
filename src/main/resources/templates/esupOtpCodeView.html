@@ -42,10 +42,10 @@
         <script type="module" th:inline="javascript">
 
           // (ugly) syntax explained here: https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#javascript-natural-templates
-          var apiUrl = /*[[${apiUrl}]]*/ "";
-          var uid = /*[[${uid}]]*/ "";
-          var userHash = /*[[${userHash}]]*/ "";
-          var otpManagerUrl = /*[[${otpManagerUrl}]]*/ "";
+          const apiUrl = /*[[${apiUrl}]]*/ "";
+          const uid = /*[[${uid}]]*/ "";
+          const userHash = /*[[${userHash}]]*/ "";
+          const otpManagerUrl = /*[[${otpManagerUrl}]]*/ "";
           
           import * as login_js from /*[[${apiUrl + "/public/login.js?v=1"}]]*/ "";
 
