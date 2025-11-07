@@ -1,6 +1,6 @@
 Works on Apereo CAS V 7.3.0 - https://github.com/apereo/cas
 
-Require [esup-otp-api](https://github.com/EsupPortail/esup-otp-api/) $\ge$ v2.1.0
+Require [esup-otp-api](https://github.com/EsupPortail/esup-otp-api/) $\ge$ v2.2.0
 
 ## Config
 
@@ -71,7 +71,7 @@ add
 
 dependencies {
     ...
-    implementation "org.esup-portail:esup-otp-cas:v2.1.0-cas_v7.3.x"
+    implementation "org.esup-portail:esup-otp-cas:v2.2.0-cas_v7.3.x"
 }
 ```
 

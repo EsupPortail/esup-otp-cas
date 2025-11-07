@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.2.0 (2025-11-07) ([7.3.x](https://github.com/EsupPortail/esup-otp-cas/releases/tag/v2.2.0-cas_v7.3.x))
+- load esup-otp-api/public/login.js as ESM module
+- **BREAKING CHANGES**
+    - require esup-otp-api => [v2.2.0](https://github.com/EsupPortail/esup-otp-api/releases/tag/v2.2.0)
+
 ## v2.1.0 (2025-10-17) ([7.3.x](https://github.com/EsupPortail/esup-otp-cas/releases/tag/v2.1.0-cas_v7.3.x))
 - Centralize the common code from [esup-otp-cas](https://github.com/EsupPortail/esup-otp-cas), [esup-otp-cas-server](https://github.com/EsupPortail/esup-otp-cas-server), and [esup-otp-shibboleth](https://github.com/Renater/esup-otp-shibboleth/) in [esup-otp-api](https://github.com/EsupPortail/esup-otp-api/tree/master/public).
 - **BREAKING CHANGES**
