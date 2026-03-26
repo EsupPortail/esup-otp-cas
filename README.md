@@ -22,7 +22,7 @@ If you want to trust devices for 7 days, you can add this in cas.properties
 ```
 cas.authn.mfa.trusted.core.device-registration-enabled=true                                                                                                                                         
 cas.authn.mfa.trusted.core.auto-assign-device-name=true
-cas.authn.mfa.trusted.device-fingerprint.cookie.max-age=604800
+cas.authn.mfa.trusted.device-fingerprint.cookie.max-age=PT8H
 ```
 with auto-assign-device-name, user will not have to choose a name for his device in a web form, it will be automatically assigned.  
 
