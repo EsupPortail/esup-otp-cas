@@ -20,6 +20,7 @@ services:
         cp /tmp/libs/*x.jar /cas-overlay/cas/lib/esup-otp-cas.jar &&
         java -server -noverify -Xmx2048M
              -XX:SharedArchiveFile=cas/cas.jsa
+             -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 \       
              -cp 'cas/cas.war:/cas-overlay/cas/lib/esup-otp-cas.jar'
        org.apereo.cas.web.CasWebApplication"
      network_mode: host   # partage le réseau de l'hôte - nécessaire pour accéder à l'API esup-otp-api en localhost:3000

@@ -155,6 +155,9 @@ Note that some ports on your host must be free :
  * 3000 for esup-otp-api, 
  * 4000 for esup-otp-manager
  * 3980 for openldap
+ * 5005 for remote debugging of CAS
+
+-> you can debug CAS with remote debugging on port 5005, and you can set breakpoints in esup-otp-cas code to see how it works.
 
 ## Screenshots
 
