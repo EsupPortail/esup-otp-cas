@@ -1,0 +1,57 @@
+services:
+
+   openldap:
+     image: osixia/openldap:latest
+     environment:
+       LDAP_DOMAIN: "example.org"
+     command: --copy-service
+     ports:
+       - "3980:389"
+     volumes:
+      - ./docker/ldap-config:/container/service/slapd/assets/config/bootstrap/ldif/custom
+
+   cas:
+     image: esupportail/apereo-cas-ldap-mfa:7.3.5
+     volumes:
+       - ./docker/cas-config:/etc/cas
+       - ./docker/cas-config/tmp-cas:/tmp/cas
+       - ../../build/libs:/tmp/libs
+     entrypoint: bash -c "
+        cp /tmp/libs/*x.jar /cas-overlay/cas/lib/esup-otp-cas.jar &&
+        java -server -noverify -Xmx2048M
+             -XX:SharedArchiveFile=cas/cas.jsa
+             -cp 'cas/cas.war:/cas-overlay/cas/lib/esup-otp-cas.jar'
+       org.apereo.cas.web.CasWebApplication"
+     network_mode: host   # partage le réseau de l'hôte - nécessaire pour accéder à l'API esup-otp-api en localhost:3000
+     depends_on:
+       - openldap
+
+   mongodb:
+     image: mongo:latest
+
+   esup-otp-api:
+     build:
+         context: .
+         dockerfile: ./docker/esup-otp-api/Dockerfile
+     volumes:
+         - ./docker/esup-otp-api/properties:/properties
+     entrypoint: bash -c "
+         cp /properties/esup.json /app/properties/esup.json &&
+         node run"
+     ports:
+       - "3000:3000"
+     depends_on:
+       - mongodb
+
+   esup-otp-manager:
+        build:
+            context: .
+            dockerfile: ./docker/esup-otp-manager/Dockerfile
+        volumes:
+          - ./docker/esup-otp-manager/properties:/properties
+        entrypoint: bash -c "
+          cp /properties/esup.json /app/properties/esup.json &&
+          node run"
+        network_mode: host   # partage le réseau de l'hôte - nécessaire pour accéder au CAS en localhost:8080
+        depends_on:
+          - mongodb
