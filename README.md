@@ -127,8 +127,34 @@ Next, to publish on central maven repository, with JDK 21, and after setting ver
 ./gradlew clean build publish jreleaserFullRelease
 ```
 
+## development environment with docker
+
+You can use docker to setup a development environment with CAS and esup-otp-api.
+
+For that, build the esup-otp-api with
+```
+./gradlew clean build
+```
+
+Then, run
+```
+docker compose -f src/etc/docker-compose.yml up
+``` 
+
+Next, you can access esup-otp-manager on http://localhost:4000/
+It will be redirected to CAS for authentication on http://localhost:8080/cas/login?service=http://localhost:4000/
+
+You can use login/password : 
+* admin/pass
+* joe/pass
+* jack/pass
 
 
+Note that some ports on your host must be free : 
+ * 8080 for CAS, 
+ * 3000 for esup-otp-api, 
+ * 4000 for esup-otp-manager
+ * 3980 for openldap
 
 ## Screenshots
 
