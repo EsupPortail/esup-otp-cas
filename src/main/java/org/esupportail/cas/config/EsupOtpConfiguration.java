@@ -94,7 +94,7 @@ public class EsupOtpConfiguration {
     
     @Bean
     @ConditionalOnMissingBean(name = "esupotpCasWebflowExecutionPlanConfigurer")
-    public CasWebflowExecutionPlanConfigurer mfaSimpleCasWebflowExecutionPlanConfigurer() {
+    public CasWebflowExecutionPlanConfigurer esupotpCasWebflowExecutionPlanConfigurer() {
 	return plan -> plan.registerWebflowConfigurer(esupotpMultifactorWebflowConfigurer());
     }
 
