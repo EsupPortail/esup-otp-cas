@@ -40,5 +40,5 @@ changetype: add
 objectClass: groupOfUniqueNames
 objectClass: top
 cn: admin
+uniqueMember: uid=admin,ou=people,dc=example,dc=org
 uniqueMember: uid=joe,ou=people,dc=example,dc=org
-

@@ -10,7 +10,7 @@
     "api_url": "http://localhost:3000",
     "api_password":"changeit",
     "session_secret_key": "changeit",
-    "admins": ["john"],
+    "admins": ["admin"],
     "admins_attributes": {"memberof": ["cn=admin,ou=groups,dc=example,dc=org"]},
     "managers": ["paul"],
     "managers_attributes": {"supannentiteaffectation": ["DSI"]},
