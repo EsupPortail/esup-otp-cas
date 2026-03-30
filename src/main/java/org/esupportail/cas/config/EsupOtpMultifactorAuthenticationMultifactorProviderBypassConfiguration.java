@@ -11,7 +11,6 @@ import org.apereo.cas.authentication.bypass.HttpRequestMultifactorAuthentication
 import org.apereo.cas.authentication.bypass.MultifactorAuthenticationProviderBypassEvaluator;
 import org.apereo.cas.authentication.bypass.PrincipalMultifactorAuthenticationProviderBypassEvaluator;
 import org.apereo.cas.authentication.bypass.RegisteredServiceMultifactorAuthenticationProviderBypassEvaluator;
-import org.apereo.cas.authentication.bypass.RegisteredServicePrincipalAttributeMultifactorAuthenticationProviderBypassEvaluator;
 import org.apereo.cas.authentication.bypass.RestMultifactorAuthenticationProviderBypassEvaluator;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.configuration.model.support.mfa.MultifactorAuthenticationProviderBypassProperties;
@@ -61,7 +60,7 @@ public class EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfigurat
         }
         bypass.addMultifactorAuthenticationProviderBypassEvaluator(esupOtpMultifactorRegisteredServiceMultifactorAuthenticationProviderBypass());
         bypass.addMultifactorAuthenticationProviderBypassEvaluator(
-            esupOtpRegisteredServicePrincipalAttributeMultifactorAuthenticationProviderBypassEvaluator());
+                esupOtpRegisteredServiceMultifactorAuthenticationProviderBypassEvaluator());
         if (StringUtils.isNotBlank(props.getAuthenticationAttributeName())
             || StringUtils.isNotBlank(props.getAuthenticationHandlerName())
             || StringUtils.isNotBlank(props.getAuthenticationMethodName())) {
@@ -107,11 +106,11 @@ public class EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfigurat
         return new HttpRequestMultifactorAuthenticationProviderBypassEvaluator(props, esupOtpConfigurationProperties.getId(), applicationContext);
     }
 
-    @ConditionalOnMissingBean(name = "esupOtpRegisteredServicePrincipalAttributeMultifactorAuthenticationProviderBypassEvaluator")
+    @ConditionalOnMissingBean(name = "esupOtpRegisteredServiceMultifactorAuthenticationProviderBypassEvaluator")
     @Bean
     @RefreshScope
-    public MultifactorAuthenticationProviderBypassEvaluator esupOtpRegisteredServicePrincipalAttributeMultifactorAuthenticationProviderBypassEvaluator() {
-        return new RegisteredServicePrincipalAttributeMultifactorAuthenticationProviderBypassEvaluator(esupOtpConfigurationProperties.getId(), applicationContext);
+    public MultifactorAuthenticationProviderBypassEvaluator esupOtpRegisteredServiceMultifactorAuthenticationProviderBypassEvaluator() {
+        return new RegisteredServiceMultifactorAuthenticationProviderBypassEvaluator(esupOtpConfigurationProperties.getId(), applicationContext);
     }
 
     @Bean
