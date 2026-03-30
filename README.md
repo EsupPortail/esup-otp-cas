@@ -135,12 +135,7 @@ Next, to publish on central maven repository, with JDK 21, and after setting ver
 
 You can use docker to setup a development environment with CAS and esup-otp-cas.
 
-For that, build the esup-otp-cas with
-```
-./gradlew clean build
-```
-
-Then, run
+For that, run
 ```
 docker compose -f src/etc/docker-compose.yml up
 ``` 

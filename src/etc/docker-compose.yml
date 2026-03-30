@@ -25,7 +25,10 @@ services:
        org.apereo.cas.web.CasWebApplication"
      network_mode: host   # partage le réseau de l'hôte - nécessaire pour accéder à l'API esup-otp-api en localhost:3000
      depends_on:
-       - openldap
+       openldap:
+         condition: service_started
+       esup-otp-cas-build:
+         condition: service_completed_successfully
 
    mongodb:
      image: mongo:latest
@@ -60,3 +63,14 @@ services:
         network_mode: host   # partage le réseau de l'hôte - nécessaire pour accéder au CAS en localhost:8080
         depends_on:
           - mongodb
+
+   esup-otp-cas-build:
+        image: openjdk:25-ea-slim
+        working_dir: /src
+        user: "${UID:-1000}:${GID:-1000}"
+        environment:
+          GRADLE_USER_HOME: /src/.gradle
+        command: bash -lc "./gradlew clean build"
+        volumes:
+            - ../..:/src
+
