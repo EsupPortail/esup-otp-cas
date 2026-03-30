@@ -34,6 +34,8 @@ services:
      build:
          context: .
          dockerfile: ./docker/esup-otp-api/Dockerfile
+         args:
+           - VERSION=v2.2.3
      volumes:
          - ./docker/esup-otp-api/properties:/properties
      entrypoint: bash -c "
@@ -48,6 +50,8 @@ services:
         build:
             context: .
             dockerfile: ./docker/esup-otp-manager/Dockerfile
+            args:
+              - VERSION=2.0.1
         volumes:
           - ./docker/esup-otp-manager/properties:/properties
         entrypoint: bash -c "

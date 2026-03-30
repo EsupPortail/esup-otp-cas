@@ -1,7 +1,8 @@
 FROM node:lts-alpine AS builder
 RUN apk add --no-cache git
 WORKDIR /app
-RUN git clone --depth 1 https://github.com/EsupPortail/esup-otp-api .
+ARG VERSION
+RUN git clone --depth 1 https://github.com/EsupPortail/esup-otp-api --branch ${VERSION} .
 RUN npm install --legacy-peer-deps
 
 FROM node:lts-alpine
