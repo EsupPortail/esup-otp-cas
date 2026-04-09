@@ -11,7 +11,7 @@ services:
       - ./docker/ldap-config:/container/service/slapd/assets/config/bootstrap/ldif/custom
 
    cas:
-     image: esupportail/apereo-cas-ldap-mfa:8.0.0-RC3
+     image: ghcr.io/esupportail/apereo-cas-ldap:8.0.0-RC3
      volumes:
        - ./docker/cas-config:/etc/cas
        - ./docker/cas-config/tmp-cas:/tmp/cas
@@ -54,7 +54,7 @@ services:
             context: .
             dockerfile: ./docker/esup-otp-manager/Dockerfile
             args:
-              - VERSION=2.0.1
+              - VERSION=v2.0.1
         volumes:
           - ./docker/esup-otp-manager/properties:/properties
         entrypoint: bash -c "
