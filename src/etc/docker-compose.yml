@@ -11,7 +11,7 @@ services:
       - ./docker/ldap-config:/container/service/slapd/assets/config/bootstrap/ldif/custom
 
    cas:
-     image: esupportail/apereo-cas-ldap-mfa:7.3.5-2
+     image: ghcr.io/esupportail/apereo-cas-ldap-mfa:7.3.6
      volumes:
        - ./docker/cas-config:/etc/cas
        - ./docker/cas-config/tmp-cas:/tmp/cas
