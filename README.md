@@ -159,6 +159,12 @@ Note that some ports on your host must be free :
 
 -> you can debug CAS with remote debugging on port 5005, and you can set breakpoints in esup-otp-cas code to see how it works.
 
+If you want to reset the environment (rebuild esup-otp-api/esup-otp-manager, reset mongodb and rebuild esup-otp-cas with your changes...), you can run
+```
+docker compose -f src/etc/docker-compose.yml down -v
+docker compose -f src/etc/docker-compose.yml up --build
+```
+
 ## Screenshots
 
 ![ESUP-OTP-CAS - Phone Authentication](src/etc/esup-otp-cas-1.png)
