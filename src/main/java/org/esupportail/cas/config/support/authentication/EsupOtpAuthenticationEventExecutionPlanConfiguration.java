@@ -1,5 +1,6 @@
 package org.esupportail.cas.config.support.authentication;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apereo.cas.authentication.*;
 import org.apereo.cas.authentication.bypass.MultifactorAuthenticationProviderBypassEvaluator;
 import org.apereo.cas.authentication.metadata.AuthenticationContextAttributeMetaDataPopulator;
@@ -13,10 +14,8 @@ import org.esupportail.cas.config.EsupOtpConfigurationProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ScopedProxyMode;
 
 /**
@@ -25,8 +24,6 @@ import org.springframework.context.annotation.ScopedProxyMode;
  * @author Francis Le Coq
  * @since 5.2.2
  */
-@Configuration("EsupOtpAuthenticationEventExecutionPlanConfiguration")
-@EnableConfigurationProperties(CasConfigurationProperties.class)
 public class EsupOtpAuthenticationEventExecutionPlanConfiguration {
 
     @Autowired
@@ -48,7 +45,7 @@ public class EsupOtpAuthenticationEventExecutionPlanConfiguration {
     @RefreshScope
     public AuthenticationHandler esupotpAuthenticationHandler() {
         return new EsupOtpAuthenticationHandler(
-        	esupOtpConfigurationProperties.getName(),
+	        	StringUtils.defaultIfBlank(esupOtpConfigurationProperties.getName(), esupOtpConfigurationProperties.getId()),
         	esupotpPrincipalFactory(),
         	esupOtpConfigurationProperties,
         	esupOtpService()
@@ -74,7 +71,7 @@ public class EsupOtpAuthenticationEventExecutionPlanConfiguration {
         p.setFailureMode(esupOtpConfigurationProperties.getFailureMode());
         p.setFailureModeEvaluator(failureModeEvaluator);
         p.setOrder(esupOtpConfigurationProperties.getRank());
-        p.setId(esupOtpConfigurationProperties.getId());
+	    p.setId(esupOtpConfigurationProperties.getName());
 		return p;
 	}
 	
@@ -84,7 +81,7 @@ public class EsupOtpAuthenticationEventExecutionPlanConfiguration {
             return new AuthenticationContextAttributeMetaDataPopulator(
                 casProperties.getAuthn().getMfa().getCore().getAuthenticationContextAttribute(),
                 esupotpAuthenticationHandler(),
-                esupotpAuthenticationProvider().getId()
+                esupOtpConfigurationProperties.getName()
             );
         }
 	

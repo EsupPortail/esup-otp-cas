@@ -1,9 +1,7 @@
 package org.esupportail.cas.adaptors.esupotp;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apereo.cas.authentication.AbstractMultifactorAuthenticationProvider;
 import org.apereo.cas.services.RegisteredService;
-import org.esupportail.cas.config.EsupOtpConfigurationProperties;
 
 /**
  * The authentication provider
@@ -17,7 +15,7 @@ public class EsupOtpMultifactorAuthenticationProvider extends AbstractMultifacto
         
     @Override
     public String getId() {
-        return StringUtils.defaultIfBlank(super.getId(), EsupOtpConfigurationProperties.DEFAULT_IDENTIFIER);
+        return super.getId();
     }
 
     @Override

@@ -1,4 +1,1 @@
-org.esupportail.cas.config.support.authentication.EsupOtpAuthenticationEventExecutionPlanConfiguration
-org.esupportail.cas.config.EsupOtpConfiguration
-org.esupportail.cas.config.EsupOtpConfigurationProperties
-org.esupportail.cas.config.EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfiguration
+org.esupportail.cas.config.EsupOtpAutoConfiguration

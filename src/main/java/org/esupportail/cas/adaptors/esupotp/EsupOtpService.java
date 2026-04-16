@@ -39,7 +39,7 @@ public class EsupOtpService {
 		con.setRequestProperty("Authorization", "Bearer " + esupOtpConfigurationProperties.getApiPassword());
 		con.setDoOutput(true);
 		con.getOutputStream().close();
-		log.info("Mfa-esupotp request send to [{}]", (String) url);
+		log.info("{} request send to [{}]", esupOtpConfigurationProperties.getId(), (String) url);
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		String inputLine;
 		StringBuffer response = new StringBuffer();
@@ -59,7 +59,7 @@ public class EsupOtpService {
 		HttpURLConnection con = null;
 		con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("GET");
-		log.info("mfa-esupotp request send to [{}]", url.toString());
+		log.info("{} request send to [{}]", esupOtpConfigurationProperties.getId(), url.toString());
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		String inputLine;
 		StringBuffer response = new StringBuffer();
