@@ -95,7 +95,7 @@ public class EsupOtpConfiguration {
     @Bean
     @ConditionalOnMissingBean(name = "esupotpCasWebflowExecutionPlanConfigurer")
     public CasWebflowExecutionPlanConfigurer esupotpCasWebflowExecutionPlanConfigurer() {
-	return plan -> plan.registerWebflowConfigurer(esupotpMultifactorWebflowConfigurer());
+	    return plan -> plan.registerWebflowConfigurer(esupotpMultifactorWebflowConfigurer());
     }
 
     /**                                                                                                                                                                                                            
@@ -118,7 +118,7 @@ public class EsupOtpConfiguration {
 
         @ConditionalOnMissingBean(name = "esupOtpMultifactorTrustWebflowExecutionPlanConfigurer")
         @Bean
-        public CasWebflowExecutionPlanConfigurer casSimpleMultifactorTrustWebflowExecutionPlanConfigurer() {
+        public CasWebflowExecutionPlanConfigurer esupOtpMultifactorTrustWebflowExecutionPlanConfigurer() {
             return plan -> plan.registerWebflowConfigurer(esupotpMultifactorTrustWebflowConfigurer());
         }
     }
