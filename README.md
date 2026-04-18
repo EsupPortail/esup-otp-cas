@@ -165,6 +165,43 @@ docker compose -f src/etc/docker-compose.yml down -v
 docker compose -f src/etc/docker-compose.yml up --build
 ```
 
+If you wan to reset only the esup-otp-api database on mongodb (that contains users, otp methods, backup codes...), you can run
+```
+docker compose -f src/etc/docker-compose.yml exec mongodb mongosh --eval "db.getSiblingDB('test-otp').dropDatabase()"
+```
+
+### Optional Playwright end-to-end tests
+
+You can also run an optional Docker profile that executes a Playwright scenario against the local stack.
+
+The scenario covers:
+* access to esup-otp-mamanager on `http://localhost:4000/` with the CAS redirect,
+* login with `joe/pass`,
+* activation of backup codes in `esup-otp-manager`,
+* memorizing one backup code,
+* logout of esup-otp-mamanager (and CAS),
+* (re)login with `joe/pass` and access to the MFA challenge,
+* validation with the saved backup code and successful authentication,
+* deactivation of backup codes.
+
+Run it with:
+```bash
+docker compose -f src/etc/docker-compose.yml --profile playwright up
+```
+
+This profile is optional and uses the same host ports as the development stack (`4000`, `8080`, `3000`, `3980`, `27017`).
+After the run, inspect the HTML report under `src/etc/docker/playwright/playwright-report/`; the recorded `.webm` videos are attached there as report artifacts.
+
+If you want to only rerun the Playwright tests without restarting the whole stack, you can run (--build is useful if you want to rebuild the image with your latest code changes):
+```bash
+docker compose -f src/etc/docker-compose.yml --profile playwright run --rm playwright --build
+```
+
+It can be useful to reinitialize the esup-otp-api database before running the tests, to ensure a clean state with known users and OTP methods:
+```bash
+docker compose -f src/etc/docker-compose.yml exec mongodb mongosh --eval "db.getSiblingDB('test-otp').dropDatabase()"
+``` 
+
 ## Screenshots
 
 ![ESUP-OTP-CAS - Phone Authentication](src/etc/esup-otp-cas-1.png)
