@@ -105,9 +105,26 @@ public class EsupOtpMultiInstancesConfigurationRegistrar implements BeanDefiniti
     @Override
     public void postProcessBeanFactory(@NotNull final ConfigurableListableBeanFactory beanFactory) throws BeansException {
         final Environment environment = beanFactory.getBean(Environment.class);
-        final List<EsupOtpConfigurationProperties> configs = Binder.get(environment)
+        List<EsupOtpConfigurationProperties> configs = Binder.get(environment)
             .bind("esupotp", Bindable.listOf(EsupOtpConfigurationProperties.class))
             .orElse(List.of());
+
+        // If the list is empty, try to read old configuration style with only one config in the file
+        // -> assure retro-compatibility with old config file
+        if(configs.isEmpty()) {
+            EsupOtpConfigurationProperties config = Binder.get(environment)
+            .bind("esupotp", Bindable.of(EsupOtpConfigurationProperties.class))
+            .orElse(null);
+            if(config != null) {
+                log.info("ESUP-OTP multi-instances registrar: no indexed configuration found, but found single configuration. Using it as the only instance.");
+                if(StringUtils.isEmpty(config.getName())) {
+                    config.setName("mfa-esupotp");
+                }
+                configs = List.of(config);
+            } else {
+                log.warn("ESUP-OTP registrar: no configuration found.");
+            }
+        }
 
         log.info("ESUP-OTP multi-instances registrar: found {} instance(s) to register.", configs.size());
 
@@ -120,6 +137,12 @@ public class EsupOtpMultiInstancesConfigurationRegistrar implements BeanDefiniti
                 index, config.getId(), config.getName());
             final EsupOtpService esupOtpService = registerInstanceBeans(beanFactory, config, index);
             esupOtpServices.putIfAbsent(config.getName(), esupOtpService);
+            if(configs.size() == 1) {
+                // keep compatibility with old version :
+                // esupOtpService bean is registered with a fixed name when there is only one instance,
+                // to avoid breaking existing references to it in groovy scripts
+                registry.registerAlias(beanName("esupOtpService", config.getName()), "esupOtpService");
+            }
         }
 
         if (!esupOtpServices.isEmpty() && !registry.containsBeanDefinition("esupOtpServices")) {
