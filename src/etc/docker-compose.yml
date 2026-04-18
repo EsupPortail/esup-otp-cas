@@ -11,11 +11,20 @@ services:
       - ./docker/ldap-config:/container/service/slapd/assets/config/bootstrap/ldif/custom
 
    cas:
-     image: ghcr.io/esupportail/apereo-cas-ldap-mfa:8.0.0-RC3
+     build:
+        context: .
+        dockerfile_inline: |
+          FROM ghcr.io/esupportail/apereo-cas-ldap-mfa:8.0.0-RC3
+          RUN apt-get update && apt-get -y install curl
      volumes:
        - ./docker/cas-config:/etc/cas
        - ./docker/cas-config/tmp-cas:/tmp/cas
        - ../../build/libs:/tmp/libs
+     healthcheck:
+       test: [ "CMD-SHELL", "test -f /tmp/cas.healthcheck-passed || (curl -fs http://localhost:8080/cas/login | grep -q username && touch /tmp/cas.healthcheck-passed)" ]
+       interval: 5s
+       timeout: 10s
+       retries: 20
      entrypoint: bash -c "
         cp /tmp/libs/*x-SNAPSHOT.jar /cas-overlay/cas/lib/esup-otp-cas.jar &&
         java -server -noverify -Xmx2048M
@@ -75,4 +84,22 @@ services:
         command: bash -lc "./gradlew clean build"
         volumes:
             - ../..:/src
+
+   playwright:
+        build:
+            context: ./docker/playwright
+        profiles:
+          - playwright
+        command: ["sh", "-lc", "xvfb-run -a npx playwright test --headed esup-otp-cas.spec.js"]
+        network_mode: host
+        shm_size: 1gb
+        volumes:
+          - ./docker/playwright/playwright-report:/work/playwright-report
+        depends_on:
+          cas:
+            condition: service_healthy
+          esup-otp-api:
+            condition: service_started
+          esup-otp-manager:
+            condition: service_started
 
