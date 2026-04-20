@@ -19,18 +19,14 @@ import org.esupportail.cas.config.support.authentication.EsupOtpBypassProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * This is {@link EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfiguration}.
  * 
  */
-@Configuration("esupOtpMultifactorAuthenticationMultifactorProviderBypassConfiguration")
-@EnableConfigurationProperties(CasConfigurationProperties.class)
 public class EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfiguration {
 
     @Autowired
@@ -87,7 +83,7 @@ public class EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfigurat
     @RefreshScope
     public MultifactorAuthenticationProviderBypassEvaluator esupOtpMultifactorRestMultifactorAuthenticationProviderBypass() {
     	MultifactorAuthenticationProviderBypassProperties props = esupOtpConfigurationProperties.getBypass();
-        return new RestMultifactorAuthenticationProviderBypassEvaluator(props, esupOtpConfigurationProperties.getId(), applicationContext);
+          return new RestMultifactorAuthenticationProviderBypassEvaluator(props, esupOtpConfigurationProperties.getName(), applicationContext);
     }
 
     @ConditionalOnMissingBean(name = "esupOtpMultifactorGroovyMultifactorAuthenticationProviderBypass")
@@ -95,7 +91,7 @@ public class EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfigurat
     @RefreshScope
     public MultifactorAuthenticationProviderBypassEvaluator esupOtpMultifactorGroovyMultifactorAuthenticationProviderBypass() {
     	MultifactorAuthenticationProviderBypassProperties props = esupOtpConfigurationProperties.getBypass();
-        return new GroovyMultifactorAuthenticationProviderBypassEvaluator(props, esupOtpConfigurationProperties.getId(), applicationContext);
+          return new GroovyMultifactorAuthenticationProviderBypassEvaluator(props, esupOtpConfigurationProperties.getName(), applicationContext);
     }
 
     @ConditionalOnMissingBean(name = "esupOtpMultifactorHttpRequestMultifactorAuthenticationProviderBypass")
@@ -103,14 +99,14 @@ public class EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfigurat
     @RefreshScope
     public MultifactorAuthenticationProviderBypassEvaluator esupOtpMultifactorHttpRequestMultifactorAuthenticationProviderBypass() {
     	MultifactorAuthenticationProviderBypassProperties props = esupOtpConfigurationProperties.getBypass();
-        return new HttpRequestMultifactorAuthenticationProviderBypassEvaluator(props, esupOtpConfigurationProperties.getId(), applicationContext);
+          return new HttpRequestMultifactorAuthenticationProviderBypassEvaluator(props, esupOtpConfigurationProperties.getName(), applicationContext);
     }
 
     @ConditionalOnMissingBean(name = "esupOtpRegisteredServiceMultifactorAuthenticationProviderBypassEvaluator")
     @Bean
     @RefreshScope
     public MultifactorAuthenticationProviderBypassEvaluator esupOtpRegisteredServiceMultifactorAuthenticationProviderBypassEvaluator() {
-        return new RegisteredServiceMultifactorAuthenticationProviderBypassEvaluator(esupOtpConfigurationProperties.getId(), applicationContext);
+          return new RegisteredServiceMultifactorAuthenticationProviderBypassEvaluator(esupOtpConfigurationProperties.getName(), applicationContext);
     }
 
     @Bean
@@ -118,21 +114,21 @@ public class EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfigurat
     @ConditionalOnMissingBean(name = "esupOtpMultifactorCredentialMultifactorAuthenticationProviderBypass")
     public MultifactorAuthenticationProviderBypassEvaluator esupOtpMultifactorCredentialMultifactorAuthenticationProviderBypass() {
     	MultifactorAuthenticationProviderBypassProperties props = esupOtpConfigurationProperties.getBypass();
-        return new CredentialMultifactorAuthenticationProviderBypassEvaluator(props, esupOtpConfigurationProperties.getId(), applicationContext);
+          return new CredentialMultifactorAuthenticationProviderBypassEvaluator(props, esupOtpConfigurationProperties.getName(), applicationContext);
     }
 
     @Bean
     @RefreshScope
     @ConditionalOnMissingBean(name = "esupOtpMultifactorRegisteredServiceMultifactorAuthenticationProviderBypass")
     public MultifactorAuthenticationProviderBypassEvaluator esupOtpMultifactorRegisteredServiceMultifactorAuthenticationProviderBypass() {
-        return new RegisteredServiceMultifactorAuthenticationProviderBypassEvaluator(esupOtpConfigurationProperties.getId(), applicationContext);
+          return new RegisteredServiceMultifactorAuthenticationProviderBypassEvaluator(esupOtpConfigurationProperties.getName(), applicationContext);
     }
 
     @Bean
     @ConditionalOnMissingBean(name = "esupOtpMultifactorPrincipalMultifactorAuthenticationProviderBypass")
     public MultifactorAuthenticationProviderBypassEvaluator esupOtpMultifactorPrincipalMultifactorAuthenticationProviderBypass() {
     	MultifactorAuthenticationProviderBypassProperties props = esupOtpConfigurationProperties.getBypass();
-        return new PrincipalMultifactorAuthenticationProviderBypassEvaluator(props, esupOtpConfigurationProperties.getId(), applicationContext);
+          return new PrincipalMultifactorAuthenticationProviderBypassEvaluator(props, esupOtpConfigurationProperties.getName(), applicationContext);
     }
 
     @Bean
@@ -140,7 +136,7 @@ public class EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfigurat
     @ConditionalOnMissingBean(name = "esupOtpMultifactorAuthenticationMultifactorAuthenticationProviderBypass")
     public MultifactorAuthenticationProviderBypassEvaluator esupOtpMultifactorAuthenticationMultifactorAuthenticationProviderBypass() {
         MultifactorAuthenticationProviderBypassProperties props = esupOtpConfigurationProperties.getBypass();
-        return new AuthenticationMultifactorAuthenticationProviderBypassEvaluator(props, esupOtpConfigurationProperties.getId(), applicationContext);
+          return new AuthenticationMultifactorAuthenticationProviderBypassEvaluator(props, esupOtpConfigurationProperties.getName(), applicationContext);
     }
 
 }

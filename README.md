@@ -37,14 +37,20 @@ Create esupotp.properties in same directory as cas.properties
 ##
 # Esup Otp Authentication
 #
-esupotp.rank=0
-esupotp.urlApi=http://my-api.com:8081
-esupotp.usersSecret=changeit
-esupotp.apiPassword=changeit
-esupotp.byPassIfNoEsupOtpMethodIsActive=false
-esupotp.otpManagerUrl=https://esup-otp-manager.univ.fr/
-esupotp.failureMode=CLOSED
+esupotp[0].name=mfa-esupotp
+esupotp[0].rank=0
+esupotp[0].urlApi=http://my-api.com:8081
+esupotp[0].usersSecret=changeit
+esupotp[0].apiPassword=changeit
+esupotp[0].byPassIfNoEsupOtpMethodIsActive=false
+esupotp[0].otpManagerUrl=https://esup-otp-manager.univ.fr/
+esupotp[0].failureMode=CLOSED
 ```
+
+`name` is the required identifier and is also used as the provider `id`.
+To add more ESUP-OTP instances, duplicate the `esupotp[0]` block with `esupotp[1]`, `esupotp[2]`, ... and give each one a distinct `name`.
+For each ESUP-OTP provider, Spring exposes a bean with the name `esupOtpService-<name>`, so for example with `mfa-esupotp` you get `esupOtpService-mfa-esupotp` in custom Groovy code.
+Spring also exposes the map bean `esupOtpServices`, indexed by each configured `name`.
 
 In esupotp.properties you can also use usual Multifactor Authentication Bypass configurations described here https://apereo.github.io/cas/7.3.x/mfa/Configuring-Multifactor-Authentication-Bypass.html
 

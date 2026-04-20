@@ -3,6 +3,7 @@ package org.esupportail.cas.adaptors.esupotp.web.flow;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Objects;
 
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.web.flow.CasWebflowConstants;
@@ -11,6 +12,7 @@ import org.apereo.cas.web.flow.configurer.CasMultifactorWebflowCustomizer;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpCredential;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
+import org.springframework.webflow.execution.Action;
 import org.springframework.webflow.engine.ActionState;
 import org.springframework.webflow.engine.Flow;
 import org.springframework.webflow.engine.ViewState;
@@ -25,10 +27,11 @@ import org.springframework.webflow.engine.builder.support.FlowBuilderServices;
  */
 public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorWebflowConfigurer {
 
-    public static final String MFA_ESUPOTP_EVENT_ID = "mfa-esupotp";
-    
     static final String STATE_ID_GET_INFOS = "getTransportsForm";
     static final String STATE_ID_ASK_CODE_VIEW = "submitCodeFormView";
+
+    private final String authenticationWebflowActionBeanName;
+    private final String getTransportsActionBeanName;
 
     public EsupOtpMultifactorWebflowConfigurer(final FlowBuilderServices flowBuilderServices,
                                                            final FlowDefinitionRegistry loginFlowDefinitionRegistry,
@@ -36,21 +39,41 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
                                                            final ConfigurableApplicationContext applicationContext,
                                                            final CasConfigurationProperties casProperties,
                                                            final List<CasMultifactorWebflowCustomizer> mfaFlowCustomizers) {
-        super(flowBuilderServices, loginFlowDefinitionRegistry, applicationContext, casProperties, Optional.of(flowDefinitionRegistry), mfaFlowCustomizers);;
+        this(flowBuilderServices, loginFlowDefinitionRegistry, flowDefinitionRegistry, applicationContext, casProperties,
+            mfaFlowCustomizers, "esupotpAuthenticationWebflowAction", "esupotpGetTransportsAction");
+    }
+
+    public EsupOtpMultifactorWebflowConfigurer(final FlowBuilderServices flowBuilderServices,
+                                                           final FlowDefinitionRegistry loginFlowDefinitionRegistry,
+                                                           final FlowDefinitionRegistry flowDefinitionRegistry,
+                                                           final ConfigurableApplicationContext applicationContext,
+                                                           final CasConfigurationProperties casProperties,
+                                                           final List<CasMultifactorWebflowCustomizer> mfaFlowCustomizers,
+                                                           final String authenticationWebflowActionBeanName,
+                                                           final String getTransportsActionBeanName) {
+        super(flowBuilderServices, loginFlowDefinitionRegistry, applicationContext, casProperties, Optional.of(flowDefinitionRegistry), mfaFlowCustomizers);
+        this.authenticationWebflowActionBeanName = authenticationWebflowActionBeanName;
+        this.getTransportsActionBeanName = getTransportsActionBeanName;
     }
     
     @Override
     protected void doInitialize() {
 
-    	multifactorAuthenticationFlowDefinitionRegistries.forEach(registry -> {
-    		
-            Flow flow = getFlow(registry, MFA_ESUPOTP_EVENT_ID);
-            
+	multifactorAuthenticationFlowDefinitionRegistries.forEach(registry -> {
+            final String[] flowDefinitionIds = registry.getFlowDefinitionIds();
+            if (flowDefinitionIds.length != 1) {
+                throw new IllegalStateException("Expected exactly one ESUP-OTP flow definition but found " + flowDefinitionIds.length);
+            }
+            final String flowId = flowDefinitionIds[0];
+            final Flow flow = getFlow(registry, flowId);
+
             // to store errors & token
             createFlowVariable(flow, CasWebflowConstants.VAR_ID_CREDENTIAL/*"credential"*/, EsupOtpCredential.class);
             
             // call CAS "initialFlowSetupAction" to init various things
-            flow.getStartActionList().add(createEvaluateAction(CasWebflowConstants.ACTION_ID_INITIAL_FLOW_SETUP));
+            final var startActionList = Objects.requireNonNull(flow.getStartActionList(),
+                () -> "Flow start action list is not available for ESUP-OTP flow '" + flowId + "'.");
+            startActionList.add(createEvaluateAction(CasWebflowConstants.ACTION_ID_INITIAL_FLOW_SETUP));
 
             // state #1: start with CAS "initializeLoginForm"
             ActionState initLoginFormState = createActionState(flow, CasWebflowConstants.STATE_ID_INIT_LOGIN_FORM,
@@ -61,7 +84,7 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
 
             // state #2: get various vars in flow scope
             ActionState transportForm = createActionState(flow, STATE_ID_GET_INFOS,
-                createEvaluateAction("esupotpGetTransportsAction")); // mettre dans le flow les params de la vue "esupOtpCodeView" en cas d'evt "authWithCode"
+                resolveActionBean(getTransportsActionBeanName)); // mettre dans le flow les params de la vue "esupOtpCodeView" en cas d'evt "authWithCode"
             createTransitionForState(transportForm, CasWebflowConstants.TRANSITION_ID_SUCCESS, STATE_ID_ASK_CODE_VIEW);
 
             // state #3: prompt OTP (using JS to trigger methods)
@@ -73,12 +96,17 @@ public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorW
 
             // state #4: verify OTP
             ActionState realSubmitState = createActionState(flow, CasWebflowConstants.STATE_ID_REAL_SUBMIT,
-                createEvaluateAction("esupotpAuthenticationWebflowAction"));
+                resolveActionBean(authenticationWebflowActionBeanName));
 
             createTransitionForState(realSubmitState, CasWebflowConstants.TRANSITION_ID_SUCCESS, CasWebflowConstants.STATE_ID_SUCCESS);
             createTransitionForState(realSubmitState, CasWebflowConstants.TRANSITION_ID_ERROR, CasWebflowConstants.STATE_ID_INIT_LOGIN_FORM); // go back to state #1
 
-        });        
-    	registerMultifactorProviderAuthenticationWebflow(getLoginFlow(), MFA_ESUPOTP_EVENT_ID);
+            registerMultifactorProviderAuthenticationWebflow(getLoginFlow(), flowId);
+
+        });
+    }
+
+    private Action resolveActionBean(final String beanName) {
+        return getApplicationContext().getBean(beanName, Action.class);
     }
 }

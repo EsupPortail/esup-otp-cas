@@ -1,7 +1,5 @@
 package org.esupportail.cas.config.support.authentication;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.apereo.cas.authentication.Authentication;
@@ -31,7 +29,7 @@ public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProvider
 	public EsupOtpBypassProvider(EsupOtpService esupOtpService,
 			EsupOtpConfigurationProperties esupOtpConfigurationProperties, final ApplicationContext applicationContext,
 			MultifactorAuthenticationFailureModeEvaluator failureModeEvaluator) {
-		super(EsupOtpConfigurationProperties.DEFAULT_IDENTIFIER, applicationContext);
+		super(esupOtpConfigurationProperties.getId(), applicationContext);
 		this.esupOtpService = esupOtpService;
 		this.esupOtpConfigurationProperties = esupOtpConfigurationProperties;
 		this.failureModeEvaluator = failureModeEvaluator;
@@ -45,13 +43,13 @@ public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProvider
 		    return true;
 		}
 		try {					
-			log.debug("mfa-esupotp bypass evaluation ...");		
+			log.debug("{} bypass evaluation ...", esupOtpConfigurationProperties.getId());
 				final String uid = authentication.getPrincipal().getId();
 	
 				JSONObject userInfos = esupOtpService.getUserInfos(uid);
 	
 				if (!userInfos.getJSONObject("user").getBoolean("has_enabled_method")) {
-                    log.info(String.format("no method active for %s for service %s - mfa-esupotp bypass", uid, registeredService != null ? registeredService.getId() : "null"));
+	                    log.info(String.format("no method active for %s for service %s - %s bypass", uid, registeredService != null ? registeredService.getId() : "null", esupOtpConfigurationProperties.getId()));
 					return false;
 				}
 		} catch (Exception e) {

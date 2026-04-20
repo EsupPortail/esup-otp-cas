@@ -38,16 +38,18 @@ public class EsupOtpMultifactorTrustWebflowConfigurer extends AbstractMultifacto
     protected void doInitialize() {
         registerMultifactorTrustedAuthentication();
         // Hack : CAS don't set the deviceRegistrationExpiration in the MultifactorAuthenticationTrustBean
-        // so we set it here if cas.authn.mfa.trusted.device-fingerprint.cookie.max-age is set (>-1)
+        // so we set it here on every ESUP-OTP flow if cas.authn.mfa.trusted.device-fingerprint.cookie.max-age is set (>-1)
         if(deviceRegistrationExpirationInSeconds > -1) {
-            val flowId = Arrays.stream(flowDefinitionRegistry.getFlowDefinitionIds()).findFirst().get();
-            val flow = (Flow) flowDefinitionRegistry.getFlowDefinition(flowId);
-            flow.getStartActionList().add(requestContext -> {
-                val deviceBean = MultifactorAuthenticationTrustUtils.getMultifactorAuthenticationTrustRecord(requestContext, MultifactorAuthenticationTrustBean.class);
-                val deviceRecord = deviceBean.get();
-                deviceRecord.setExpiration(deviceRegistrationExpirationInSeconds);
-                deviceRecord.setTimeUnit(ChronoUnit.SECONDS);
-                return null;
+            Arrays.stream(flowDefinitionRegistry.getFlowDefinitionIds()).forEach(flowId -> {
+                val flow = (Flow) flowDefinitionRegistry.getFlowDefinition(flowId);
+                flow.getStartActionList().add(requestContext -> {
+                    val deviceBean = MultifactorAuthenticationTrustUtils.getMultifactorAuthenticationTrustRecord(requestContext, MultifactorAuthenticationTrustBean.class);
+                    deviceBean.ifPresent(deviceRecord -> {
+                        deviceRecord.setExpiration(deviceRegistrationExpirationInSeconds);
+                        deviceRecord.setTimeUnit(ChronoUnit.SECONDS);
+                    });
+                    return null;
+                });
             });
         }
     }
