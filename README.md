@@ -1,4 +1,4 @@
-Works on Apereo CAS V 7.3.0 - https://github.com/apereo/cas
+Works on Apereo CAS V 7.3.7.1 - https://github.com/apereo/cas
 
 Require [esup-otp-api](https://github.com/EsupPortail/esup-otp-api/) $\ge$ v2.2.3
 

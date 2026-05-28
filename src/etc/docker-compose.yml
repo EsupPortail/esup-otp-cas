@@ -11,7 +11,7 @@ services:
       - ./docker/ldap-config:/container/service/slapd/assets/config/bootstrap/ldif/custom
 
    cas:
-     image: ghcr.io/esupportail/apereo-cas-ldap-mfa:7.3.6
+     image: ghcr.io/esupportail/apereo-cas-ldap-mfa:7.3.7.1
      volumes:
        - ./docker/cas-config:/etc/cas
        - ./docker/cas-config/tmp-cas:/tmp/cas
@@ -26,9 +26,11 @@ services:
      network_mode: host   # partage le réseau de l'hôte - nécessaire pour accéder à l'API esup-otp-api en localhost:3000
      depends_on:
        - openldap
+       - mongodb
 
    mongodb:
      image: mongo:latest
+     network_mode: host
 
    esup-otp-api:
      build:
@@ -39,8 +41,7 @@ services:
      entrypoint: bash -c "
          cp /properties/esup.json /app/properties/esup.json &&
          node run"
-     ports:
-       - "3000:3000"
+     network_mode: host         
      depends_on:
        - mongodb
 
