@@ -46,7 +46,7 @@ esupotp.otpManagerUrl=https://esup-otp-manager.univ.fr/
 esupotp.failureMode=CLOSED
 ```
 
-In esupotp.properties you can also use usual Multifactor Authentication Bypass configurations described here https://apereo.github.io/cas/7.3.x/mfa/Configuring-Multifactor-Authentication-Bypass.html
+In esupotp.properties you can also use usual Multifactor Authentication Bypass configurations described here https://apereo.github.io/cas/8.0.x/mfa/Configuring-Multifactor-Authentication-Bypass.html
 
 So for example you can setup bypass with groovy script :
 ```
@@ -75,7 +75,7 @@ add
 
 dependencies {
     ...
-    implementation "org.esup-portail:esup-otp-cas:v2.2.0-cas_v7.3.x"
+    implementation "org.esup-portail:esup-otp-cas:v2.3.0-cas_v8.0.x"
 }
 ```
 
