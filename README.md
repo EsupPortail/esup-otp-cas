@@ -1,4 +1,4 @@
-Works on Apereo CAS V 8.0.0-RC3 - https://github.com/apereo/cas
+Works on Apereo CAS V 8.0.1.2 - https://github.com/apereo/cas
 
 For older versions of CAS, please check the branch corresponding to your CAS version : 
 * for CAS 7.3.x, check branch [7.3.x](https://github.com/EsupPortail/esup-otp-cas/tree/7.3.x)
