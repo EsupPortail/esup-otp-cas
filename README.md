@@ -1,6 +1,7 @@
-Works on Apereo CAS V 8.0.3 - https://github.com/apereo/cas
+Works on Apereo CAS V 8.1.0-RC3 - https://github.com/apereo/cas
 
 For older versions of CAS, please check the branch corresponding to your CAS version : 
+* for CAS 8.0.x, check branch [8.0.x](https://github.com/EsupPortail/esup-otp-cas/tree/8.0.x)
 * for CAS 7.3.x, check branch [7.3.x](https://github.com/EsupPortail/esup-otp-cas/tree/7.3.x)
 * for CAS 7.2.x, check branch [7.2.x](https://github.com/EsupPortail/esup-otp-cas/tree/7.2.x)
 
@@ -75,7 +76,7 @@ add
 
 dependencies {
     ...
-    implementation "org.esup-portail:esup-otp-cas:v2.3.0-cas_v8.0.x"
+    implementation "org.esup-portail:esup-otp-cas:v2.3.0-cas_v8.1.x"
 }
 ```
 
@@ -194,7 +195,7 @@ After the run, inspect the HTML report under `src/etc/docker/playwright/playwrig
 
 If you want to only rerun the Playwright tests without restarting the whole stack, you can run (--build is useful if you want to rebuild the image with your latest code changes):
 ```bash
-docker compose -f src/etc/docker-compose.yml --profile playwright run --rm playwright --build
+docker compose -f src/etc/docker-compose.yml --profile playwright run --rm --build playwright 
 ```
 
 It can be useful to reinitialize the esup-otp-api database before running the tests, to ensure a clean state with known users and OTP methods:
