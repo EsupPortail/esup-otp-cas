@@ -31,6 +31,15 @@ public class EsupOtpService {
 
 
 	public JSONObject verifyOtp(String uid, String otp) throws IOException {
+		try {
+			return doVerifyOtp(uid, otp);
+		} catch (IOException e) {
+			// HTTP exception messages can contain the OTP URL; do not retain the cause.
+			throw new IOException("MFA verification request failed");
+		}
+	}
+
+	private JSONObject doVerifyOtp(String uid, String otp) throws IOException {
 		String url = esupOtpConfigurationProperties.getUrlApi() + "/protected/users/" + uid + "/" + otp + "/";
 		URL obj = new URL(url);
 		HttpURLConnection con = null;
@@ -39,7 +48,7 @@ public class EsupOtpService {
 		con.setRequestProperty("Authorization", "Bearer " + esupOtpConfigurationProperties.getApiPassword());
 		con.setDoOutput(true);
 		con.getOutputStream().close();
-		log.info("Mfa-esupotp request send to [{}]", (String) url);
+		log.info("Sending MFA verification request");
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		String inputLine;
 		StringBuffer response = new StringBuffer();
@@ -48,7 +57,7 @@ public class EsupOtpService {
 			response.append(inputLine);
 		}
 		in.close();
-		log.info("Connection success to [{}]", (String) url);
+		log.info("MFA verification request completed");
 
 		return new JSONObject(response.toString());
 	}
@@ -59,7 +68,7 @@ public class EsupOtpService {
 		HttpURLConnection con = null;
 		con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("GET");
-		log.info("mfa-esupotp request send to [{}]", url.toString());
+		log.debug("Sending MFA user information request");
 		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 		String inputLine;
 		StringBuffer response = new StringBuffer();
@@ -67,7 +76,7 @@ public class EsupOtpService {
 			response.append(inputLine);
 		}
 		in.close();
-		log.debug("getUserInfos({}) : {}", uid, response.toString());
+		log.debug("MFA user information request completed");
 
 		return new JSONObject(response.toString());
 	}

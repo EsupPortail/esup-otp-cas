@@ -3,7 +3,6 @@ package org.esupportail.cas.adaptors.esupotp;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apereo.cas.authentication.credential.AbstractCredential;
 
 /**
@@ -36,9 +35,13 @@ public class EsupOtpCredential extends AbstractCredential {
     
     @Override
     public String getId() {
-        return this.token;
+        return "mfa-esupotp";
     }
 
+    @Override
+    public boolean isValid() {
+        return StringUtils.isNotBlank(token);
+    }
 
     public String getToken() {
         return this.token;
@@ -50,7 +53,7 @@ public class EsupOtpCredential extends AbstractCredential {
 
     @Override
     public String toString() {
-        return token;
+        return getId();
     }
 
     @Override
