@@ -49,8 +49,6 @@ public class EsupOtpConfigurationProperties extends BaseMultifactorAuthenticatio
 		if (otpManagerUrl == null) throw new IllegalStateException("The [esupotp.otpManagerUrl] property must be set in esup.properties.");
 		log.info("rank : {}", this.getRank());
 		log.info("urlApi : {}", urlApi); 
-		log.info("usersSecret : {}", usersSecret); 
-		log.info("apiPassword : {}", apiPassword);
 		log.info("byPassIfNoEsupOtpMethodIsActive : {}", byPassIfNoEsupOtpMethodIsActive);
 		log.info("otpManagerUrl : {}", otpManagerUrl);
 		log.info("failureMode : {}", getFailureMode());

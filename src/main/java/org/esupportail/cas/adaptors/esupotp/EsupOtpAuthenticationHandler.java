@@ -47,6 +47,9 @@ public class EsupOtpAuthenticationHandler extends AbstractPreAndPostProcessingAu
 	protected AuthenticationHandlerExecutionResult doAuthentication(final Credential credential, Service service)
 			throws GeneralSecurityException, PreventedException {
 		final EsupOtpCredential esupotpCredential = (EsupOtpCredential) credential;
+		if (!esupotpCredential.isValid()) {
+			throw new FailedLoginException("Missing OTP code");
+		}
 		final String otp = esupotpCredential.getToken();
 		final RequestContext context = RequestContextHolder.getRequestContext();
 		final String uid = WebUtils.getAuthentication(context).getPrincipal().getId();
@@ -57,9 +60,10 @@ public class EsupOtpAuthenticationHandler extends AbstractPreAndPostProcessingAu
 				return createHandlerResult(esupotpCredential, this.principalFactory.createPrincipal(uid), new ArrayList<>(0));
 			}
 		} catch (Throwable e) {
-			 log.error("doAuthentication failed", e);
+			// HTTP exceptions can contain the request URL, including the OTP.
+			log.error("OTP verification failed ({})", e.getClass().getSimpleName());
 		}
-		throw new FailedLoginException("Failed to authenticate code " + otp);
+		throw new FailedLoginException("Failed to authenticate OTP");
 	}
 
 	@Override
