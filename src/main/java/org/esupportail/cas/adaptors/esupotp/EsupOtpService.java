@@ -1,84 +1,87 @@
 package org.esupportail.cas.adaptors.esupotp;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
+import java.time.Duration;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
 import jakarta.xml.bind.annotation.adapters.HexBinaryAdapter;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import org.apache.hc.client5.http.impl.DefaultHttpRequestRetryStrategy;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.util.TimeValue;
+import org.apereo.cas.util.http.HttpRequestUtils;
+import org.apereo.cas.util.http.SimpleHttpClient;
+import org.apereo.cas.util.http.SimpleHttpClientFactoryBean;
 import org.esupportail.cas.config.EsupOtpConfigurationProperties;
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.DisposableBean;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+public class EsupOtpService implements DisposableBean {
+	private final EsupOtpConfigurationProperties esupOtpConfigurationProperties;
+	private final SimpleHttpClient httpClient;
 
-@Slf4j
-@AllArgsConstructor
-public class EsupOtpService {
-
-	EsupOtpConfigurationProperties esupOtpConfigurationProperties;
-
-
-	public JSONObject verifyOtp(String uid, String otp) throws IOException {
-		try {
-			return doVerifyOtp(uid, otp);
-		} catch (IOException e) {
-			// HTTP exception messages can contain the OTP URL; do not retain the cause.
-			throw new IOException("MFA verification request failed");
-		}
+	public EsupOtpService(EsupOtpConfigurationProperties properties) {
+		this.esupOtpConfigurationProperties = properties;
+		var factory = new SimpleHttpClientFactoryBean();
+		factory.setConnectionTimeout(timeoutMillis(properties.getConnectionTimeout()));
+		factory.setSocketTimeout(timeoutMillis(properties.getReadTimeout()));
+		factory.setResponseTimeout(timeoutMillis(properties.getReadTimeout()));
+		factory.setRetryStrategy(new DefaultHttpRequestRetryStrategy(0, TimeValue.ZERO_MILLISECONDS));
+		factory.setRedirectsEnabled(false);
+		this.httpClient = factory.getObject();
 	}
 
-	private JSONObject doVerifyOtp(String uid, String otp) throws IOException {
-		String url = esupOtpConfigurationProperties.getUrlApi() + "/protected/users/" + uid + "/" + otp + "/";
-		URL obj = new URL(url);
-		HttpURLConnection con = null;
-		con = (HttpURLConnection) obj.openConnection();
-		con.setRequestMethod("POST");
-		con.setRequestProperty("Authorization", "Bearer " + esupOtpConfigurationProperties.getApiPassword());
-		con.setDoOutput(true);
-		con.getOutputStream().close();
-		log.info("Sending MFA verification request");
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
+	private static long timeoutMillis(Duration timeout) {
+		if (timeout == null || timeout.isNegative() || timeout.isZero() || timeout.toMillis() == 0) {
+			throw new IllegalArgumentException("MFA HTTP timeouts must be at least one millisecond");
 		}
-		in.close();
-		log.info("MFA verification request completed");
+		return timeout.toMillis();
+	}
 
-		return new JSONObject(response.toString());
+	public JSONObject verifyOtp(String uid, String otp) throws IOException {
+		return execute("/protected/users/" + uid + "/" + otp + "/", true);
 	}
 
 	public JSONObject getUserInfos(String uid) throws IOException, NoSuchAlgorithmException {
-		String url = esupOtpConfigurationProperties.getUrlApi() + "/users/" + uid + "/" + getUserHash(uid);
-		URL obj = new URL(url);
-		HttpURLConnection con = null;
-		con = (HttpURLConnection) obj.openConnection();
-		con.setRequestMethod("GET");
-		log.debug("Sending MFA user information request");
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-		in.close();
-		log.debug("MFA user information request completed");
+		return execute("/users/" + uid + "/" + getUserHash(uid), false);
+	}
 
-		return new JSONObject(response.toString());
+	private JSONObject execute(String path, boolean verification) throws IOException {
+		// Never propagate transport exceptions: their messages can contain the OTP URL.
+		try {
+			String baseUrl = esupOtpConfigurationProperties.getUrlApi().replaceAll("/+$", "");
+			HttpUriRequestBase request = verification
+				? new HttpPost(baseUrl + path) : new HttpGet(baseUrl + path);
+			if (verification) {
+				request.setHeader("Authorization", "Bearer " + esupOtpConfigurationProperties.getApiPassword());
+			}
+			// CAS buffers the body; Apache releases the network response on success and failure.
+			try (var response = httpClient.wrappedHttpClient().execute(request,
+					HttpRequestUtils.HTTP_CLIENT_RESPONSE_HANDLER)) {
+				if (response.getCode() < 200 || response.getCode() >= 300) {
+					throw new IOException("Unexpected MFA HTTP status: " + response.getCode());
+				}
+				if (response.getEntity() == null) {
+					throw new IOException("Empty MFA response");
+				}
+				return new JSONObject(EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8));
+			}
+		} catch (Exception e) {
+			throw new IOException(verification
+				? "MFA verification request failed" : "MFA user information request failed");
+		}
+	}
+
+	@Override
+	public void destroy() {
+		httpClient.destroy();
 	}
 
 	public String getUserHash(String uid) throws NoSuchAlgorithmException, UnsupportedEncodingException {

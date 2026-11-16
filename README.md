@@ -39,6 +39,8 @@ Create esupotp.properties in same directory as cas.properties
 # Esup Otp Authentication
 #
 esupotp.rank=0
+esupotp.connection-timeout=PT10S
+esupotp.read-timeout=PT10S
 esupotp.urlApi=http://my-api.com:8081
 esupotp.usersSecret=changeit
 esupotp.apiPassword=changeit
@@ -46,6 +48,8 @@ esupotp.byPassIfNoEsupOtpMethodIsActive=false
 esupotp.otpManagerUrl=https://esup-otp-manager.univ.fr/
 esupotp.failureMode=CLOSED
 ```
+
+HTTP timeouts use Java Duration syntax (for example `PT10S` or `PT0.5S`) and must be at least one millisecond. The connection timeout also bounds waiting for a pooled connection. The read timeout bounds waiting for the response and socket inactivity; it is not a total request deadline. Changes apply when the service is recreated (normally on restart). Requests are not retried automatically and redirects are rejected.
 
 In esupotp.properties you can also use usual Multifactor Authentication Bypass configurations described here https://apereo.github.io/cas/8.0.x/mfa/Configuring-Multifactor-Authentication-Bypass.html
 
