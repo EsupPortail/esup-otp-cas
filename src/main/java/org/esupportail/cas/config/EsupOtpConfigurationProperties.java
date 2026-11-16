@@ -1,5 +1,7 @@
 package org.esupportail.cas.config;
 
+import java.time.Duration;
+
 import org.apereo.cas.configuration.model.support.mfa.BaseMultifactorAuthenticationProviderProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,12 @@ public class EsupOtpConfigurationProperties extends BaseMultifactorAuthenticatio
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
+	/** Maximum wait for a connection, including acquisition from the pool. */
+	Duration connectionTimeout = Duration.ofSeconds(10);
+
+	/** Maximum wait for a response or an inactive socket read, not a total request deadline. */
+	Duration readTimeout = Duration.ofSeconds(10);
+
 	String urlApi;
 	
 	String usersSecret;
