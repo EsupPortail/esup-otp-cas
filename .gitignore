@@ -1,6 +1,7 @@
 .gradle
 /build/
 .idea
+src/etc/docker/playwright/playwright-report/
 
 # Ignore Gradle GUI config
 gradle-app.setting
