@@ -77,7 +77,7 @@ services:
           - mongodb
 
    esup-otp-cas-build:
-        image: openjdk:25-ea-slim
+        image: eclipse-temurin:21-jdk
         working_dir: /src
         environment:
           GRADLE_USER_HOME: /src/.gradle
