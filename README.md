@@ -220,3 +220,6 @@ docker compose -f src/etc/docker-compose.yml exec mongodb mongosh --eval "db.get
 
 ![ESUP-OTP-CAS - Grid Authentication](src/etc/esup-otp-cas-2.png)
 
+## AI-assisted development
+
+Development of this project is assisted by AI tools, notably for the Playwright end-to-end tests, as well as other development tasks.
