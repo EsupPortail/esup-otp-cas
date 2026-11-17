@@ -38,6 +38,8 @@ Create esupotp.properties in same directory as cas.properties
 # Esup Otp Authentication
 #
 esupotp.rank=0
+esupotp.connection-timeout=PT10S
+esupotp.read-timeout=PT10S
 esupotp.urlApi=http://my-api.com:8081
 esupotp.usersSecret=changeit
 esupotp.apiPassword=changeit
@@ -45,6 +47,8 @@ esupotp.byPassIfNoEsupOtpMethodIsActive=false
 esupotp.otpManagerUrl=https://esup-otp-manager.univ.fr/
 esupotp.failureMode=CLOSED
 ```
+
+HTTP timeouts use Java Duration syntax (for example `PT10S` or `PT0.5S`) and must be at least one millisecond. The connection timeout also bounds waiting for a pooled connection. The read timeout bounds waiting for the response and socket inactivity; it is not a total request deadline. Changes apply when the service is recreated (normally on restart). Requests are not retried automatically and redirects are rejected.
 
 In esupotp.properties you can also use usual Multifactor Authentication Bypass configurations described here https://apereo.github.io/cas/8.0.x/mfa/Configuring-Multifactor-Authentication-Bypass.html
 
@@ -172,7 +176,7 @@ docker compose -f src/etc/docker-compose.yml exec mongodb mongosh --eval "db.get
 
 ### Optional Playwright end-to-end tests
 
-You can also run an optional Docker profile that executes a Playwright scenario against the local stack.
+You can also run an optional Docker profile that executes the Playwright scenarios against the local stack.
 
 The scenario covers:
 * access to esup-otp-mamanager on `http://localhost:4000/` with the CAS redirect,
@@ -186,15 +190,22 @@ The scenario covers:
 
 Run it with:
 ```bash
-docker compose -f src/etc/docker-compose.yml --profile playwright up
+docker compose -f src/etc/docker-compose.yml -f src/etc/docker-compose.playwright.yml --profile playwright run --rm --build playwright
 ```
 
-This profile is optional and uses the same host ports as the development stack (`4000`, `8080`, `3000`, `3980`, `27017`).
+The suite also verifies that an OTP verification timeout rejects MFA, and that a user-information timeout does not bypass MFA with `failureMode=CLOSED`. Both scenarios check that CAS grants neither a service ticket nor a TGC, then complete a successful OTP retry.
+
+The Playwright override enables the bypass evaluator and uses a direct MFA trigger so the user-information timeout occurs in the bypass evaluation. A dependency-free Node proxy on port `3001` delays one targeted request by 3 seconds, exceeding the CAS read timeout of 500 ms. Its control API is bound to loopback on port `3002` and reset before and after every test. This configuration applies only with the override file.
+
+This profile is optional and uses the development ports (`4000`, `8080`, `3000`, `3980`, `27017`) plus proxy ports `3001` and `3002`. The command returns the Playwright exit code. Stop the test stack afterwards with:
+```bash
+docker compose -f src/etc/docker-compose.yml -f src/etc/docker-compose.playwright.yml --profile playwright down
+```
 After the run, inspect the HTML report under `src/etc/docker/playwright/playwright-report/`; the recorded `.webm` videos are attached there as report artifacts.
 
 If you want to only rerun the Playwright tests without restarting the whole stack, you can run (--build is useful if you want to rebuild the image with your latest code changes):
 ```bash
-docker compose -f src/etc/docker-compose.yml --profile playwright run --rm playwright --build
+docker compose -f src/etc/docker-compose.yml -f src/etc/docker-compose.playwright.yml --profile playwright run --rm --build playwright
 ```
 
 It can be useful to reinitialize the esup-otp-api database before running the tests, to ensure a clean state with known users and OTP methods:
@@ -208,3 +219,6 @@ docker compose -f src/etc/docker-compose.yml exec mongodb mongosh --eval "db.get
 
 ![ESUP-OTP-CAS - Grid Authentication](src/etc/esup-otp-cas-2.png)
 
+## AI-assisted development
+
+Development of this project is assisted by AI tools, notably for the Playwright end-to-end tests, as well as other development tasks.
