@@ -1,0 +1,25 @@
+# Apply only when running the Playwright suite.
+services:
+  cas:
+    environment:
+      SPRING_APPLICATION_JSON: >-
+        {"esupotp.urlApi":"http://localhost:3001/",
+         "esupotp.read-timeout":"PT0.5S",
+         "esupotp.byPassIfNoEsupOtpMethodIsActive":true,
+         "esupotp.failureMode":"CLOSED",
+         "cas.authn.mfa.groovy-script.location":"file:/etc/cas/config/mfaPlaywrightTrigger.groovy",
+         "cas.http-web-request.header.content-security-policy":"script-src 'self' 'unsafe-inline' 'unsafe-eval' http://localhost:3000/ http://localhost:3001/; object-src 'none'; worker-src 'self' blob: 'unsafe-inline'"}
+    depends_on:
+      otp-timeout-proxy:
+        condition: service_started
+
+  otp-timeout-proxy:
+    image: node:22-alpine
+    profiles: [playwright]
+    network_mode: host
+    command: [node, /proxy/proxy.js]
+    volumes:
+      - ./docker/otp-timeout-proxy:/proxy:ro
+    depends_on:
+      esup-otp-api:
+        condition: service_started
