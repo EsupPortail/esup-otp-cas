@@ -79,7 +79,7 @@ add
 
 dependencies {
     ...
-    implementation "org.esup-portail:esup-otp-cas:v2.3.0-cas_v8.0.x"
+    implementation "org.esup-portail:esup-otp-cas:v2.3.1-cas_v8.0.x"
 }
 ```
 

@@ -1,4 +1,13 @@
 # Changelog
+## v2.3.1 (2026-11-18) ([8.0.x](https://github.com/EsupPortail/esup-otp-cas/releases/tag/v2.3.1-cas_v8.0.x))
+- Add configurable connection and read timeouts for requests to esup-otp-api, both defaulting to 10 seconds.
+- Omit authentication codes from logs.
+
+## v2.3.0 (2026-08-27) ([8.0.x](https://github.com/EsupPortail/esup-otp-cas/releases/tag/v2.3.0-cas_v8.0.x))
+- Update compatibility to Apereo CAS 8.0.1.2 
+- Fix bean conflicts with other CAS MFA providers and fix trusted-device webflow configuration.
+- Add translations for the CAS MFA provider selection screen.
+- Add a Docker Compose development environment and run Playwright tests in CI
 
 ## v2.2.0 (2025-11-07) ([7.3.x](https://github.com/EsupPortail/esup-otp-cas/releases/tag/v2.2.0-cas_v7.3.x))
 - load esup-otp-api/public/login.js as ESM module
