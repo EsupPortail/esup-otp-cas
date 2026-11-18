@@ -75,7 +75,7 @@ add
 
 dependencies {
     ...
-    implementation "org.esup-portail:esup-otp-cas:v2.2.0-cas_v7.3.x"
+    implementation "org.esup-portail:esup-otp-cas:v2.3.1-cas_v7.3.x"
 }
 ```
 
