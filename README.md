@@ -1,11 +1,13 @@
-Works on Apereo CAS V 8.1.0-RC3 - https://github.com/apereo/cas
+# ESUP-OTP-CAS
+
+ESUP-OTP-CAS is a multifactor authentication provider for [Apereo CAS](https://github.com/apereo/cas). This branch targets CAS 8.1.0-RC3.
 
 For older versions of CAS, please check the branch corresponding to your CAS version : 
 * for CAS 8.0.x, check branch [8.0.x](https://github.com/EsupPortail/esup-otp-cas/tree/8.0.x)
 * for CAS 7.3.x, check branch [7.3.x](https://github.com/EsupPortail/esup-otp-cas/tree/7.3.x)
 * for CAS 7.2.x, check branch [7.2.x](https://github.com/EsupPortail/esup-otp-cas/tree/7.2.x)
 
-Require [esup-otp-api](https://github.com/EsupPortail/esup-otp-api/) $\ge$ v2.2.3
+Requires [esup-otp-api](https://github.com/EsupPortail/esup-otp-api/) v2.2.3 or later.
 
 ## Config
 
@@ -41,13 +43,19 @@ Create esupotp.properties in same directory as cas.properties
 esupotp.rank=0
 esupotp.connection-timeout=PT10S
 esupotp.read-timeout=PT10S
-esupotp.urlApi=http://my-api.com:8081
+esupotp.urlApi=https://esup-otp-api.univ-ville.fr
 esupotp.usersSecret=changeit
 esupotp.apiPassword=changeit
 esupotp.byPassIfNoEsupOtpMethodIsActive=false
 esupotp.otpManagerUrl=https://esup-otp-manager.univ.fr/
 esupotp.failureMode=CLOSED
 ```
+
+CAS and the user's browser must both be able to reach `esupotp.urlApi`. The browser loads the MFA page's JavaScript and CSS from this URL. Use an HTTPS URL when CAS is served over HTTPS and include the API origin in the CAS Content Security Policy as shown above.
+
+Set `esupotp.usersSecret` and `esupotp.apiPassword` to the values of `users_secret` and `api_password` in the API configuration.
+
+`esupotp.byPassIfNoEsupOtpMethodIsActive` defaults to `true`, which allows users with no active OTP method to skip MFA. The example sets it to `false` to disable that bypass.
 
 HTTP timeouts use Java Duration syntax (for example `PT10S` or `PT0.5S`) and must be at least one millisecond. The connection timeout also bounds waiting for a pooled connection. The read timeout bounds waiting for the response and socket inactivity; it is not a total request deadline. Changes apply when the service is recreated (normally on restart). Requests are not retried automatically and redirects are rejected.
 
@@ -74,6 +82,8 @@ def boolean run(authentication, principal, registeredService, provider, logger, 
 
 ### cas/build.gradle
 
+The example uses the `v2.3.0-cas_v8.1.x` release coordinate. Check its availability on [Maven Central](https://central.sonatype.com/artifact/org.esup-portail/esup-otp-cas) before using it. The source version for this checkout is `v2.3.1-cas_v8.1.x-SNAPSHOT`, as declared in [gradle.properties](gradle.properties).
+
 add
 ``` groovy
 ...
@@ -94,7 +104,9 @@ add
 </AsyncLogger>
 ```
 
-If you want to use an untagged version, you can use jitpack.io :
+### JitPack
+
+Use the example below only for builds available on [JitPack](https://jitpack.io/#EsupPortail/esup-otp-cas). This branch requires JDK 25, and the current [JitPack configuration](jitpack.yml) selects OpenJDK 21. For this checkout, use the local build instructions below.
 
 Add in cas/build.gradle
 ``` groovy
@@ -113,10 +125,9 @@ dependencies {
 }
 ```
 
-TIPS: Look for https://jitpack.io/#EsupPortail/esup-otp-cas and check the available version you can use
+### Local build
 
-
-If you want to package locally, with JDK 21 :
+Build locally with JDK 25.
 ```
 ./gradlew clean build
 ```
@@ -125,20 +136,20 @@ If you want to package locally, with JDK 21 :
 
 This part is only for developers, if you want to publish on central maven repository, you need to have a sonatype account and be a member of the group org.esup-portail. 
 
-esup-otp-cas use jrelease plugin to publish on maven central repository.
+ESUP-OTP-CAS uses the JReleaser plugin to publish to Maven Central.
 
 You have to configure also your ~/.jreleaser/config.yml file with your sonatype credentials.
 
 See https://jreleaser.org/guide/latest/examples/maven/maven-central.html#_gradle
 
-Next, to publish on central maven repository, with JDK 21, and after setting version on gradle.properties :
+Set the release version in `gradle.properties`, then run the following command with JDK 25.
 ```
 ./gradlew clean build publish jreleaserFullRelease
 ```
 
 ## development environment with docker
 
-You can use docker to setup a development environment with CAS and esup-otp-cas.
+The development stack requires Docker Compose and host networking. Use Docker Engine on Linux or enable host networking in Docker Desktop 4.34 or later. [Docker host networking documentation](https://docs.docker.com/engine/network/drivers/host/)
 
 For that, run
 ```
@@ -170,7 +181,7 @@ docker compose -f src/etc/docker-compose.yml down -v
 docker compose -f src/etc/docker-compose.yml up --build
 ```
 
-If you wan to reset only the esup-otp-api database on mongodb (that contains users, otp methods, backup codes...), you can run
+To reset only the esup-otp-api database in MongoDB, including its users, OTP methods and backup codes, run
 ```
 docker compose -f src/etc/docker-compose.yml exec mongodb mongosh --eval "db.getSiblingDB('test-otp').dropDatabase()"
 ```
@@ -179,35 +190,29 @@ docker compose -f src/etc/docker-compose.yml exec mongodb mongosh --eval "db.get
 
 You can also run an optional Docker profile that executes the Playwright scenarios against the local stack.
 
-The scenario covers:
-* access to esup-otp-mamanager on `http://localhost:4000/` with the CAS redirect,
-* login with `joe/pass`,
-* activation of backup codes in `esup-otp-manager`,
-* memorizing one backup code,
-* logout of esup-otp-mamanager (and CAS),
-* (re)login with `joe/pass` and access to the MFA challenge,
-* validation with the saved backup code and successful authentication,
-* deactivation of backup codes.
+The suite covers four scenarios.
+
+* Sign in to esup-otp-manager through CAS with `joe/pass`, activate backup codes, sign out, sign in again with a saved backup code, and deactivate backup codes.
+* An API timeout during OTP verification rejects the MFA attempt.
+* An explicit OTP refusal from the API rejects the MFA attempt.
+* A user-information timeout during bypass evaluation keeps MFA mandatory with `failureMode=CLOSED`.
+
+The three failure scenarios verify that CAS issues neither a service ticket nor a ticket-granting cookie (TGC) before a successful retry with a valid OTP.
 
 Run it with:
 ```bash
 docker compose -f src/etc/docker-compose.yml -f src/etc/docker-compose.playwright.yml --profile playwright run --rm --build playwright
 ```
 
-The suite also verifies that an OTP verification timeout rejects MFA, and that a user-information timeout does not bypass MFA with `failureMode=CLOSED`. Both scenarios check that CAS grants neither a service ticket nor a TGC, then complete a successful OTP retry.
-
 The Playwright override enables the bypass evaluator and uses a direct MFA trigger so the user-information timeout occurs in the bypass evaluation. A dependency-free Node proxy on port `3001` delays one targeted request by 3 seconds, exceeding the CAS read timeout of 500 ms. Its control API is bound to loopback on port `3002` and reset before and after every test. This configuration applies only with the override file.
 
-This profile is optional and uses the development ports (`4000`, `8080`, `3000`, `3980`, `27017`) plus proxy ports `3001` and `3002`. The command returns the Playwright exit code. Stop the test stack afterwards with:
+This profile uses the development ports (`4000`, `8080`, `3000`, `3980`, `27017`, and `5005`) plus proxy ports `3001` and `3002`. The command returns the Playwright exit code. Use the same command to rerun the suite while the stack is running.
+
+To stop the test stack, run
 ```bash
 docker compose -f src/etc/docker-compose.yml -f src/etc/docker-compose.playwright.yml --profile playwright down
 ```
 After the run, inspect the HTML report under `src/etc/docker/playwright/playwright-report/`; the recorded `.webm` videos are attached there as report artifacts.
-
-If you want to only rerun the Playwright tests without restarting the whole stack, you can run (--build is useful if you want to rebuild the image with your latest code changes):
-```bash
-docker compose -f src/etc/docker-compose.yml -f src/etc/docker-compose.playwright.yml --profile playwright run --rm --build playwright
-```
 
 It can be useful to reinitialize the esup-otp-api database before running the tests, to ensure a clean state with known users and OTP methods:
 ```bash
