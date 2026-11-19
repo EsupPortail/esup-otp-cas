@@ -7,7 +7,7 @@ For older versions of CAS, please check the branch corresponding to your CAS ver
 * for CAS 7.3.x, check branch [7.3.x](https://github.com/EsupPortail/esup-otp-cas/tree/7.3.x)
 * for CAS 7.2.x, check branch [7.2.x](https://github.com/EsupPortail/esup-otp-cas/tree/7.2.x)
 
-Requires [esup-otp-api](https://github.com/EsupPortail/esup-otp-api/) v2.2.3 or later.
+Requires [esup-otp-api](https://github.com/EsupPortail/esup-otp-api/) strictly newer than v2.4.0.
 
 ## Config
 

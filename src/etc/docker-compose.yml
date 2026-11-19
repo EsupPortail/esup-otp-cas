@@ -50,7 +50,7 @@ services:
          context: .
          dockerfile: ./docker/esup-otp-api/Dockerfile
          args:
-           - VERSION=v2.3.0
+           - VERSION=master
      volumes:
          - ./docker/esup-otp-api/properties:/properties
      entrypoint: bash -c "
