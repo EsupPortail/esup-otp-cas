@@ -1,0 +1,11 @@
+{
+  "@class": "org.apereo.cas.services.CasRegisteredService",
+  "serviceId": "^http://localhost:4000/playwright-bypass$",
+  "name": "Playwright bypass",
+  "id": 2,
+  "evaluationOrder": -2,
+  "multifactorPolicy": {
+    "@class": "org.apereo.cas.services.DefaultRegisteredServiceMultifactorPolicy",
+    "bypassForRequestIpAddress": ".+"
+  }
+}

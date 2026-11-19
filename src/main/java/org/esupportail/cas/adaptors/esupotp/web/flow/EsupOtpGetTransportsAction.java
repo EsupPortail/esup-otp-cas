@@ -1,30 +1,20 @@
 package org.esupportail.cas.adaptors.esupotp.web.flow;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.apereo.cas.web.flow.actions.AbstractMultifactorAuthenticationAction;
 import org.apereo.cas.web.support.WebUtils;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpMultifactorAuthenticationProvider;
 import org.esupportail.cas.adaptors.esupotp.EsupOtpService;
 import org.esupportail.cas.config.EsupOtpConfigurationProperties;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
-import org.springframework.webflow.action.EventFactorySupport;
 import org.springframework.webflow.execution.Event;
 import org.springframework.webflow.execution.RequestContext;
 import org.springframework.webflow.execution.RequestContextHolder;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Populates the webflow scope with user and endpoint data required by the OTP entry view.
  *
  * @author Alex Bouskine
  */
-@Slf4j
 public class EsupOtpGetTransportsAction extends AbstractMultifactorAuthenticationAction<EsupOtpMultifactorAuthenticationProvider> {
 
     EsupOtpConfigurationProperties esupOtpConfigurationProperties;
