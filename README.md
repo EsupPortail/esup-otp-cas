@@ -23,7 +23,7 @@ cas.authn.mfa.triggers.global.global-provider-id=mfa-esupotp
 cas.messageBundle.baseNames=classpath:custom_messages,classpath:messages,classpath:esupotp_message
 
 # Add your esup-otp-api in Content-Security-Policy:
-cas.http-web-request.header.content-security-policy=script-src 'self' 'unsafe-inline' 'unsafe-eval' https://esup-otp-api.univ-ville.fr/; object-src 'none'; worker-src 'self' blob: 'unsafe-inline' 
+cas.http-web-request.header.content-security-policy=script-src 'self' 'unsafe-inline' 'unsafe-eval' https://esup-otp-api.example.org/; object-src 'none'; worker-src 'self' blob: 'unsafe-inline'
 ```
 If you want to trust devices for 7 days, you can add this in cas.properties
 ```
@@ -43,7 +43,7 @@ Create esupotp.properties in same directory as cas.properties
 esupotp.rank=0
 esupotp.connection-timeout=PT10S
 esupotp.read-timeout=PT10S
-esupotp.urlApi=https://esup-otp-api.univ-ville.fr
+esupotp.urlApi=https://esup-otp-api.example.org
 esupotp.usersSecret=changeit
 esupotp.apiPassword=changeit
 esupotp.byPassIfNoEsupOtpMethodIsActive=false
@@ -72,7 +72,7 @@ import java.util.*
 
 def boolean run(authentication, principal, registeredService, provider, logger, httpRequest, ... other_args) {
 
-    if(registeredService.id == 10 && "cn=for.appli-sensible.supervisor,ou=groups,dc=univ-ville,dc=fr" in principal.attributes.memberOf) {
+    if(registeredService.id == 10 && "cn=for.appli-sensible.supervisor,ou=groups,dc=example,dc=org" in principal.attributes.memberOf) {
       return true;
     }
 

@@ -16,9 +16,9 @@
     "managers_attributes": {"supannentiteaffectation": ["DSI"]},
     "#how_to use users_method": "remove '#' in front of methods. You can add others acls",
     "users_methods" :{
-       "#random_code" : {"deny" : {"edupersonaffiliation" : ["student","alum"],"memberof":["cn=esup-otp.not_random_code,ou=groups,dc=univ-ville,dc=fr"]}},
-       "#random_code_mail" : {"allow" : {"edupersonaffiliation":["student","alum"],"memberof":["cn=esup-otp.random_code_mail,ou=groups,dc=univ-ville,dc=fr"]}},
-       "#bypass" : {"allow" : {"memberof":["cn=esup-otp.bypass,ou=groups,dc=univ-ville,dc=fr"]}}
+       "#random_code" : {"deny" : {"edupersonaffiliation" : ["student","alum"],"memberof":["cn=esup-otp.not_random_code,ou=groups,dc=example,dc=org"]}},
+       "#random_code_mail" : {"allow" : {"edupersonaffiliation":["student","alum"],"memberof":["cn=esup-otp.random_code_mail,ou=groups,dc=example,dc=org"]}},
+       "#bypass" : {"allow" : {"memberof":["cn=esup-otp.bypass,ou=groups,dc=example,dc=org"]}}
     },
     "#how_to transport_regexes": "if defined, users must provide a telephone number or address that matches the corresponding regex",
     "#how_to transport_regexes sms": "`^((0[67](([.]|-| )?[0-9]){8})|((00|[+])(([.]|-| )?[0-9]){7,15}))$` authorizes French mobile numbers (10 digits starting with '06' or '07') or international numbers (7 to 15 digits starting with '+' or '00').",
