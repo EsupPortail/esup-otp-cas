@@ -1,0 +1,7 @@
+{
+  "@class": "org.apereo.cas.services.CasRegisteredService",
+  "serviceId": "^http://localhost:4000/.*$",
+  "name": "Playwright MFA required",
+  "id": 3,
+  "evaluationOrder": -1
+}

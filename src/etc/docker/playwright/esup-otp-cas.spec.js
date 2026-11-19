@@ -6,6 +6,10 @@ const PASSWORD = 'pass';
 async function loginWithCas(page) {
   await page.goto('/');
   await page.locator('#login').click();
+  await submitCasCredentials(page);
+}
+
+async function submitCasCredentials(page) {
   await expect(page.locator('#username')).toBeVisible();
   await page.locator('#username').fill(USERNAME);
   await page.locator('#password').fill(PASSWORD);
@@ -144,5 +148,44 @@ test('CLOSED failure mode keeps MFA mandatory when the bypass user lookup times 
 
   await setFault(request);
   await finishWithBackupCode(page, backupCode);
+});
+
+test('A CAS service can bypass MFA while another requires a valid OTP for the same user', async ({ browser, page, context, request }) => {
+  test.setTimeout(60000);
+  const backupCode = await activateBackupCodes(page);
+  const bypassService = 'http://localhost:4000/playwright-bypass';
+  await setFault(request, 'verification-refusal');
+  const bypassContext = await browser.newContext();
+  try {
+    const bypassPage = await bypassContext.newPage();
+    await bypassPage.route(url => url.origin + url.pathname === bypassService,
+      route => route.fulfill({ status: 200, body: 'Bypass service' }));
+    await bypassPage.goto('http://localhost:8080/cas/login?' + new URLSearchParams({ service: bypassService }));
+    await submitCasCredentials(bypassPage);
+    await expect(bypassPage).toHaveURL(url => url.origin + url.pathname === bypassService
+      && /^ST-.+/.test(url.searchParams.get('ticket')));
+    expect(await (await request.get(PROXY_CONTROL)).json()).toEqual({ target: 'verification-refusal', hits: 0 });
+  } finally {
+    await bypassContext.close();
+  }
+
+  await context.clearCookies();
+  const ticketRequests = watchServiceTickets(page);
+  await loginWithCas(page);
+  await selectBackupCode(page);
+  await expectMfaStillRequired(page, context, ticketRequests);
+
+  await page.locator('#token').fill(backupCode);
+  await expect(page.locator('#errors')).toBeVisible();
+  expect(await (await request.get(PROXY_CONTROL)).json()).toEqual({ target: 'verification-refusal', hits: 1 });
+  await expectMfaStillRequired(page, context, ticketRequests);
+
+  await setFault(request);
+  await selectBackupCode(page);
+  const serviceTicket = page.waitForRequest(req => {
+    const url = new URL(req.url());
+    return url.origin === 'http://localhost:4000' && /^ST-.+/.test(url.searchParams.get('ticket'));
+  });
+  await Promise.all([serviceTicket, finishWithBackupCode(page, backupCode)]);
 });
 

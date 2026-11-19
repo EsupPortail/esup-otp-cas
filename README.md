@@ -190,12 +190,13 @@ docker compose -f src/etc/docker-compose.yml exec mongodb mongosh --eval "db.get
 
 You can also run an optional Docker profile that executes the Playwright scenarios against the local stack.
 
-The suite covers four scenarios.
+The suite covers five scenarios.
 
 * Sign in to esup-otp-manager through CAS with `joe/pass`, activate backup codes, sign out, sign in again with a saved backup code, and deactivate backup codes.
 * An API timeout during OTP verification rejects the MFA attempt.
 * An explicit OTP refusal from the API rejects the MFA attempt.
 * A user-information timeout during bypass evaluation keeps MFA mandatory with `failureMode=CLOSED`.
+* An enrolled user receives a service ticket without an OTP when the service's IP-based bypass rule applies. The same user needs a valid OTP for the other service.
 
 The three failure scenarios verify that CAS issues neither a service ticket nor a ticket-granting cookie (TGC) before a successful retry with a valid OTP.
 

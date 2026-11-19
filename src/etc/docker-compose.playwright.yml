@@ -1,6 +1,9 @@
 # Apply only when running the Playwright suite.
 services:
   cas:
+    volumes:
+      - ./docker/playwright/services/playwright-bypass-2.json:/etc/cas/services/playwright-bypass-2.json:ro
+      - ./docker/playwright/services/playwright-required-3.json:/etc/cas/services/playwright-required-3.json:ro
     environment:
       SPRING_APPLICATION_JSON: >-
         {"esupotp.urlApi":"http://localhost:3001/",
