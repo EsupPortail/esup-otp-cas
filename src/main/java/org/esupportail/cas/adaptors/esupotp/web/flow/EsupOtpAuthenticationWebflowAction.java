@@ -9,10 +9,9 @@ import org.springframework.webflow.execution.Event;
 import org.springframework.webflow.execution.RequestContext;
 
 /**
- * This is {@link EsupOtpAuthenticationWebflowAction}.
+ * Delegates OTP submission to the ESUP-OTP event resolver and returns the resulting webflow event.
  *
  * @author Alex Bouskine
- * @since 5.0.0
  */
 public class EsupOtpAuthenticationWebflowAction extends BaseCasWebflowAction {
 	CasWebflowEventResolver esupotpAuthenticationWebflowEventResolver;

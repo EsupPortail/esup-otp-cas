@@ -23,6 +23,9 @@ import org.esupportail.cas.config.EsupOtpConfigurationProperties;
 import org.json.JSONObject;
 import org.springframework.beans.factory.DisposableBean;
 
+/**
+ * Client for ESUP-OTP API operations that verify codes and retrieve user information.
+ */
 public class EsupOtpService implements DisposableBean {
 	private final EsupOtpConfigurationProperties esupOtpConfigurationProperties;
 	private final SimpleHttpClient httpClient;
@@ -45,10 +48,28 @@ public class EsupOtpService implements DisposableBean {
 		return timeout.toMillis();
 	}
 
+	/**
+	 * Submits an OTP for verification by the ESUP-OTP API.
+	 *
+	 * @param uid the CAS principal identifier
+	 * @param otp the submitted one-time code
+	 * @return the API response, which may report that the code was rejected
+	 * @throws IOException if the request fails, returns a non-success HTTP status,
+	 *                     or yields a missing or invalid JSON body
+	 */
 	public JSONObject verifyOtp(String uid, String otp) throws IOException {
 		return execute("/protected/users/" + uid + "/" + otp + "/", true);
 	}
 
+	/**
+	 * Retrieves ESUP-OTP user information, including whether the user has an enabled method.
+	 *
+	 * @param uid the CAS principal identifier
+	 * @return the user information returned by the API
+	 * @throws IOException if the request fails, returns a non-success HTTP status,
+	 *                     or yields a missing or invalid JSON body
+	 * @throws NoSuchAlgorithmException if a digest algorithm required to compute the user hash is unavailable
+	 */
 	public JSONObject getUserInfos(String uid) throws IOException, NoSuchAlgorithmException {
 		return execute("/users/" + uid + "/" + getUserHash(uid), false);
 	}

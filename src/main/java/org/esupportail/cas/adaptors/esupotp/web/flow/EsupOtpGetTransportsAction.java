@@ -20,10 +20,9 @@ import org.springframework.webflow.execution.RequestContextHolder;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * This is {@link EsupOtpGetTransportsAction}.
+ * Populates the webflow scope with user and endpoint data required by the OTP entry view.
  *
  * @author Alex Bouskine
- * @since 5.0.0
  */
 @Slf4j
 public class EsupOtpGetTransportsAction extends AbstractMultifactorAuthenticationAction<EsupOtpMultifactorAuthenticationProvider> {

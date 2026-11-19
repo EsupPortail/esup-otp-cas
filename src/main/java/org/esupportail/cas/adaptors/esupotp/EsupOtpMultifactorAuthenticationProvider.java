@@ -6,10 +6,9 @@ import org.apereo.cas.services.RegisteredService;
 import org.esupportail.cas.config.EsupOtpConfigurationProperties;
 
 /**
- * The authentication provider
+ * Represents the ESUP-OTP MFA provider in CAS and supplies the default provider identifier when none is configured.
  *
  * @author Alex Bouskine
- * @since 5.0.0
  */
 public class EsupOtpMultifactorAuthenticationProvider extends AbstractMultifactorAuthenticationProvider {
 

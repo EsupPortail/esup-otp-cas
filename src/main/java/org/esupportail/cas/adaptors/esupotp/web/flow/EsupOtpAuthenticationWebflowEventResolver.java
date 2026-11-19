@@ -10,10 +10,9 @@ import org.springframework.webflow.execution.RequestContext;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * This is {@link EsupOtpAuthenticationWebflowEventResolver}.
+ * Runs the CAS authentication transaction for the ESUP-OTP credential and resolves the resulting webflow event.
  *
  * @author Alex Bouskine
- * @since 5.0.0
  */
 @Slf4j
 public class EsupOtpAuthenticationWebflowEventResolver extends BaseMultifactorAuthenticationProviderEventResolver {

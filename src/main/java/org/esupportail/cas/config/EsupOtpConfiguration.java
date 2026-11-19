@@ -98,8 +98,8 @@ public class EsupOtpConfiguration {
 	    return plan -> plan.registerWebflowConfigurer(esupotpMultifactorWebflowConfigurer());
     }
 
-    /**                                                                                                                                                                                                            
-     * multifactor trust configuration.                                                                                                                                                                 
+    /**
+     * Registers trusted-device support for the ESUP-OTP webflow after the base MFA flow is configured.
      */
     @Configuration("esupOtpMultifactorTrustConfiguration")
     public class EsupOtpMultifactorTrustConfiguration {

@@ -6,10 +6,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apereo.cas.authentication.credential.AbstractCredential;
 
 /**
- * This is {@link EsupOtpCredential}.
+ * Carries the submitted OTP under the fixed credential identifier {@code mfa-esupotp}.
+ * The credential is valid for submission when the code contains non-whitespace characters.
  *
  * @author Alex Bouskine
- * @since 5.0.0
  */
 public class EsupOtpCredential extends AbstractCredential {
 	

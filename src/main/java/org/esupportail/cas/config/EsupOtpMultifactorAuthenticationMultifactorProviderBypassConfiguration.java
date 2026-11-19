@@ -26,8 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * This is {@link EsupOtpMultifactorAuthenticationMultifactorProviderBypassConfiguration}.
- * 
+ * Combines the ESUP-OTP enrollment check with the applicable CAS MFA bypass evaluators.
  */
 @Configuration("esupOtpMultifactorAuthenticationMultifactorProviderBypassConfiguration")
 @EnableConfigurationProperties(CasConfigurationProperties.class)

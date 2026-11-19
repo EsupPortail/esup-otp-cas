@@ -37,6 +37,13 @@ public class EsupOtpBypassProvider extends BaseMultifactorAuthenticationProvider
 		this.failureModeEvaluator = failureModeEvaluator;
 	}
 
+	/**
+	 * Evaluates the ESUP-OTP bypass rule for users without an enabled method.
+	 * When the rule is disabled, this evaluator requires MFA. When the user
+	 * lookup fails, it follows the effective CAS MFA failure mode.
+	 *
+	 * @return whether this evaluator requires ESUP-OTP MFA to proceed
+	 */
 	@Override
 	public boolean shouldMultifactorAuthenticationProviderExecuteInternal(Authentication authentication,
 			RegisteredService registeredService, MultifactorAuthenticationProvider provider,

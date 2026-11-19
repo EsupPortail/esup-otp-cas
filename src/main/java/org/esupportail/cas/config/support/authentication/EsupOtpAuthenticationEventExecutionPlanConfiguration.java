@@ -20,10 +20,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ScopedProxyMode;
 
 /**
- * This is {@link EsupOtpAuthenticationEventExecutionPlanConfiguration}.
+ * Configures the ESUP-OTP MFA provider and registers its authentication handler and metadata populator with CAS.
  *
  * @author Francis Le Coq
- * @since 5.2.2
  */
 @Configuration("EsupOtpAuthenticationEventExecutionPlanConfiguration")
 @EnableConfigurationProperties(CasConfigurationProperties.class)

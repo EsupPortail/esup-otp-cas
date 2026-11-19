@@ -18,10 +18,9 @@ import org.springframework.webflow.engine.builder.support.FlowBuilderServices;
 
 
 /**
- * This is {@link EsupOtpMultifactorWebflowConfigurer}.
+ * Registers the ESUP-OTP flow with the CAS login flow and defines the steps for displaying and submitting the OTP form.
  *
  * @author Alex Bouskine
- * @since 5.0.0
  */
 public class EsupOtpMultifactorWebflowConfigurer extends AbstractCasMultifactorWebflowConfigurer {
 

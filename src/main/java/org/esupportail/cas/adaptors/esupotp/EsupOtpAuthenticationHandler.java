@@ -22,10 +22,10 @@ import org.springframework.webflow.execution.RequestContextHolder;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * An authentication handler that uses the token provided to authenticator
+ * Verifies an ESUP-OTP code for the principal already authenticated in CAS.
+ * A missing code, an API rejection, or a verification error causes authentication to fail.
  *
  * @author Alex Bouskine
- * @since 5.0.0
  */
 @Slf4j
 public class EsupOtpAuthenticationHandler extends AbstractPreAndPostProcessingAuthenticationHandler {
@@ -34,9 +34,6 @@ public class EsupOtpAuthenticationHandler extends AbstractPreAndPostProcessingAu
     
     EsupOtpService esupOtpService;
     
-	/**
-	 * Instantiates a new Esup otp authentication handler.
-	 */
     public EsupOtpAuthenticationHandler(final String name, final PrincipalFactory principalFactory, final EsupOtpConfigurationProperties esupOtpConfigurationProperties, EsupOtpService esupOtpService) {
     	super(name, principalFactory, esupOtpConfigurationProperties.getRank());
     	this.esupOtpConfigurationProperties = esupOtpConfigurationProperties;
