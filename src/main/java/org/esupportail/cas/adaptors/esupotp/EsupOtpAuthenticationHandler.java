@@ -52,7 +52,6 @@ public class EsupOtpAuthenticationHandler extends AbstractPreAndPostProcessingAu
 				return createHandlerResult(esupotpCredential, this.principalFactory.createPrincipal(uid), new ArrayList<>(0));
 			}
 		} catch (Throwable e) {
-			// HTTP exceptions can contain the request URL, including the OTP.
 			log.error("OTP verification failed ({})", e.getClass().getSimpleName());
 		}
 		throw new FailedLoginException("Failed to authenticate OTP");

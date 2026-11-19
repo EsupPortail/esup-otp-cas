@@ -7,14 +7,17 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
 import jakarta.xml.bind.annotation.adapters.HexBinaryAdapter;
+import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.impl.DefaultHttpRequestRetryStrategy;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.hc.core5.util.TimeValue;
 import org.apereo.cas.util.http.HttpRequestUtils;
 import org.apereo.cas.util.http.SimpleHttpClient;
@@ -58,7 +61,8 @@ public class EsupOtpService implements DisposableBean {
 	 *                     or yields a missing or invalid JSON body
 	 */
 	public JSONObject verifyOtp(String uid, String otp) throws IOException {
-		return execute("/protected/users/" + uid + "/" + otp + "/", true);
+		var form = new UrlEncodedFormEntity(List.of(new BasicNameValuePair("otp", otp)), StandardCharsets.UTF_8);
+		return execute("/protected/users/" + uid + "/", form);
 	}
 
 	/**
@@ -71,16 +75,18 @@ public class EsupOtpService implements DisposableBean {
 	 * @throws NoSuchAlgorithmException if a digest algorithm required to compute the user hash is unavailable
 	 */
 	public JSONObject getUserInfos(String uid) throws IOException, NoSuchAlgorithmException {
-		return execute("/users/" + uid + "/" + getUserHash(uid), false);
+		return execute("/users/" + uid + "/" + getUserHash(uid), null);
 	}
 
-	private JSONObject execute(String path, boolean verification) throws IOException {
-		// Never propagate transport exceptions: their messages can contain the OTP URL.
+	private JSONObject execute(String path, UrlEncodedFormEntity form) throws IOException {
+		boolean verification = form != null;
+		// Suppress transport exception details that may contain sensitive request data.
 		try {
 			String baseUrl = esupOtpConfigurationProperties.getUrlApi().replaceAll("/+$", "");
 			HttpUriRequestBase request = verification
 				? new HttpPost(baseUrl + path) : new HttpGet(baseUrl + path);
 			if (verification) {
+				request.setEntity(form);
 				request.setHeader("Authorization", "Bearer " + esupOtpConfigurationProperties.getApiPassword());
 			}
 			// CAS buffers the body; Apache releases the network response on success and failure.
