@@ -1,6 +1,5 @@
 package org.esupportail.cas.adaptors.esupotp;
 
-import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 
@@ -12,7 +11,6 @@ import org.apereo.cas.authentication.PreventedException;
 import org.apereo.cas.authentication.handler.support.AbstractPreAndPostProcessingAuthenticationHandler;
 import org.apereo.cas.authentication.principal.PrincipalFactory;
 import org.apereo.cas.authentication.principal.Service;
-import org.apereo.cas.services.ServicesManager;
 import org.apereo.cas.web.support.WebUtils;
 import org.esupportail.cas.config.EsupOtpConfigurationProperties;
 import org.json.JSONObject;
@@ -30,13 +28,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EsupOtpAuthenticationHandler extends AbstractPreAndPostProcessingAuthenticationHandler {
 
-    EsupOtpConfigurationProperties esupOtpConfigurationProperties;
-    
     EsupOtpService esupOtpService;
     
     public EsupOtpAuthenticationHandler(final String name, final PrincipalFactory principalFactory, final EsupOtpConfigurationProperties esupOtpConfigurationProperties, EsupOtpService esupOtpService) {
     	super(name, principalFactory, esupOtpConfigurationProperties.getRank());
-    	this.esupOtpConfigurationProperties = esupOtpConfigurationProperties;
     	this.esupOtpService = esupOtpService;
     }
 

@@ -7,14 +7,11 @@ import org.apereo.cas.web.flow.resolver.impl.CasWebflowEventResolutionConfigurat
 import org.springframework.webflow.execution.Event;
 import org.springframework.webflow.execution.RequestContext;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * Runs the CAS authentication transaction for the ESUP-OTP credential and resolves the resulting webflow event.
  *
  * @author Alex Bouskine
  */
-@Slf4j
 public class EsupOtpAuthenticationWebflowEventResolver extends BaseMultifactorAuthenticationProviderEventResolver {
 
 	public EsupOtpAuthenticationWebflowEventResolver(CasWebflowEventResolutionConfigurationContext webflowEventResolutionConfigurationContext) {
