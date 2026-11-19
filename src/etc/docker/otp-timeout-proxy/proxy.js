@@ -10,7 +10,7 @@ http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const { target } = JSON.parse(body);
-        if (![null, 'verification', 'user'].includes(target)) throw new Error('Invalid target');
+        if (![null, 'verification', 'verification-refusal', 'user'].includes(target)) throw new Error('Invalid target');
         fault = { target, hits: 0 };
         res.writeHead(200).end();
       } catch {
@@ -43,6 +43,12 @@ http.createServer((req, res) => {
   };
   // Browser fetches include Origin/Sec-Fetch-Mode; faults must affect CAS only.
   const serverRequest = !req.headers.origin && !req.headers['sec-fetch-mode'];
+  if (serverRequest && target === 'verification' && fault.target === 'verification-refusal' && fault.hits === 0) {
+    fault.hits++;
+    // Return an application-level rejection without consuming the backup code upstream.
+    res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify({ code: 'Error' }));
+    return;
+  }
   if (serverRequest && target && target === fault.target && fault.hits === 0) {
     fault.hits++;
     // CAS must time out before a successful response can reach it. Consume only

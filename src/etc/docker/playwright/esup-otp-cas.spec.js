@@ -111,6 +111,25 @@ test('An API timeout rejects OTP verification and does not grant a service ticke
   await finishWithBackupCode(page, backupCode);
 });
 
+test('An explicit ESUP-OTP refusal issues no ticket or TGC and permits a valid retry', async ({ page, context, request }) => {
+  const backupCode = await activateBackupCodes(page);
+  await loginWithCas(page);
+  await selectBackupCode(page);
+  const ticketRequests = watchServiceTickets(page);
+
+  await setFault(request, 'verification-refusal');
+  await page.locator('#token').fill(backupCode);
+  await expect(page.locator('#errors')).toBeVisible();
+  expect(await (await request.get(PROXY_CONTROL)).json()).toEqual({ target: 'verification-refusal', hits: 1 });
+  await expectMfaStillRequired(page, context, ticketRequests);
+
+  await setFault(request);
+  await selectBackupCode(page);
+  await finishWithBackupCode(page, backupCode);
+  expect(ticketRequests).toHaveLength(1);
+  expect((await context.cookies()).filter(cookie => cookie.name === 'TGC')).toHaveLength(1);
+});
+
 test('CLOSED failure mode keeps MFA mandatory when the bypass user lookup times out', async ({ page, context, request }) => {
   test.setTimeout(60000);
   const backupCode = await activateBackupCodes(page);
