@@ -1,7 +1,7 @@
 services:
 
    openldap:
-     image: osixia/openldap:latest
+     image: osixia/openldap:1.5.0
      environment:
        LDAP_DOMAIN: "example.org"
      command: --copy-service
